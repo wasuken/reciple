@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.php
     container_name: php
+    working_dir: /var/www/html
     volumes:
       - ./php:/var/www/html
     networks:
@@ -54,7 +55,7 @@ services:
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
       - ./src:/var/www/html
     ports:
-      - "3000:80"
+      - "8080:80"
     depends_on:
       - php
       - phpmyadmin
