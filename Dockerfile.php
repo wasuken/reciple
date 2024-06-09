@@ -20,4 +20,6 @@ USER runuser
 COPY ./php/composer*.json ./
 RUN composer install
 
+COPY ./php /var/www/html
+
 CMD ["php", "spark", "serve", "--host", "0.0.0.0"]
