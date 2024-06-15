@@ -1,6 +1,11 @@
 <?php
 
 namespace App\Controllers;
+use Google_Client;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
+use App\Models\LoginModel;
 
 class Login extends BaseController
 {
@@ -8,39 +13,60 @@ class Login extends BaseController
     {
         $code = $this->request->getPost('code');
 
-        $client = \Config\Services::curlrequest();
-        $response = $client->post('https://oauth2.googleapis.com/token', [
-            'form_params' => [
-                'code' => $code,
-                'client_id' => getenv('GOOGLE_CLIENT_ID'),
-                'client_secret' => getenv('GOOGLE_CLIENT_SECRET'),
-                'redirect_uri' => getenv('GOOGLE_CLIENT_REDIRECT'),
-                'grant_type' => 'authorization_code',
-            ]
-        ]);
+        $client = new Google_Client();
+        $client->setClientId(getenv('GOOGLE_CLIENT_ID'));
+        $client->setClientSecret(getenv('GOOGLE_CLIENT_SECRET'));
+        $client->setRedirectUri(getenv('GOOGLE_CLIENT_REDIRECT_URI'));
+        $client->setScopes(['profile', 'email']);
 
-        $body = json_decode($response->getBody(), true);
-        if (isset($body['access_token'])) {
-            $userInfo = $this->getUserInfo($body['access_token']);
-            $model = new \App\Models\LoginModel();
-            $user = $model->findOrCreateUser($userInfo);
+        // 認証コードチェック
+        $token = $client->fetchAccessTokenWithAuthCode($code);
+        // log_message('error', var_export([$token, $code], true));
 
-            $appAccessToken = $this->generateAppToken($user);
+        if (isset($token['access_token'])) {
+            $client->setAccessToken($token['access_token']);
+            $userInfo = $this->getGoogleUserInfo($client);
 
-            return $this->response->setJSON(['access_token' => $appAccessToken]);
+            // ユーザー情報を元にアプリケーション内でのユーザーを特定または登録
+            $model = new LoginModel();
+            $user = $model->findUserOrCreate('google', $userInfo->id, $userInfo->name, $userInfo->email);
+
+            // JWTトークンを生成
+            $jwt = $this->generateJwtToken($user->id);
+
+            // CookieにJWTトークンを設定
+            $cookie = [
+                'name'     => 'auth_token',
+                'value'    => $jwt,
+                'expire'   => time() + 3600, // 1時間の有効期限
+                'secure'   => false,  // 開発時
+                'httponly' => true,
+            ];
+            $this->response->setCookie($cookie);
+
+            return $this->response->setJSON(['message' => 'Authenticated successfully']);
         } else {
             return $this->response->setStatusCode(400)->setJSON(['message' => 'Unable to retrieve access token']);
         }
     }
-    private function getUserInfo($accessToken)
+    private function getGoogleUserInfo(Google_Client $client)
     {
-        $client = \Config\Services::curlrequest();
-        $response = $client->get('https://www.googleapis.com/oauth2/v1/userinfo', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $accessToken
-            ]
-        ]);
+        $oauth2 = new \Google_Service_Oauth2($client);
+        return $oauth2->userinfo->get();
+    }
+    // TODO LoginModelの処理とあわせてhelperクラスにまとめる
+    private function generateJwtToken($userId)
+    {
+        $key = getenv('JWT_SECRET_KEY');
+        $payload = [
+            'iss' => getenv('JWT_SECRET_ISSUER'),
+            'aud' => getenv('JWT_SECRET_AUDIENCE'),
+            'iat' => time(),
+            'nbf' => time(),
+            'exp' => time() + 3600, // トークンの有効期限を1時間とする
+            'sub' => $userId,
+        ];
 
-        return json_decode($response->getBody(), true);
+        return \Firebase\JWT\JWT::encode($payload, $key, 'HS256');
     }
 }

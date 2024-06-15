@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class LoginModel extends Model
 {
@@ -46,7 +48,7 @@ class LoginModel extends Model
 
     protected $userTable            = 'users';
 
-    public function getUserOrCreate($provider, $providerId, $userName, $userEmail)
+    public function findUserOrCreate($provider, $providerId, $userName, $userEmail)
     {
         $db = \Config\Database::connect();
         $builder = $db->table($this->table);
