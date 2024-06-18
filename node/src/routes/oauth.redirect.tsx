@@ -14,8 +14,11 @@ function OAuth() {
     const code = params.get("code");
     setCode(code);
   }, []);
+  // oauth2コールバック後処理
   useEffect(() => {
+    // 二度実行されないための対応
     let ignore = false;
+
     const fetchAccessToken = async (code: string) => {
       if (ignore) return;
       try {
@@ -30,21 +33,22 @@ function OAuth() {
         });
 
         console.log(response.data);
-        navigate({ to: "/" });
+        navigate({ to: "/dashboard" });
       } catch (error) {
         console.error("Failed to fetch access token:", error);
+        navigate({ to: "/" });
       }
     };
 
     if (code) {
       fetchAccessToken(code);
     }
+    // 二度実行されないための対応
     return () => {
       ignore = true;
     };
   }, [code]);
 
-  return <div>Loading...</div>;
   return (
     <div className="p-2">
       <h3>Welcome Home!</h3>
