@@ -13,9 +13,9 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as DashboardImport } from './routes/dashboard'
 import { Route as AuthImport } from './routes/auth'
 import { Route as OauthRedirectImport } from './routes/oauth.redirect'
+import { Route as AuthDashboardImport } from './routes/auth.dashboard'
 
 // Create Virtual Routes
 
@@ -28,11 +28,6 @@ const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
-
-const DashboardRoute = DashboardImport.update({
-  path: '/dashboard',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AuthRoute = AuthImport.update({
   path: '/auth',
@@ -47,6 +42,11 @@ const IndexLazyRoute = IndexLazyImport.update({
 const OauthRedirectRoute = OauthRedirectImport.update({
   path: '/oauth/redirect',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthDashboardRoute = AuthDashboardImport.update({
+  path: '/dashboard',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -67,19 +67,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardImport
-      parentRoute: typeof rootRoute
-    }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
+    }
+    '/auth/dashboard': {
+      id: '/auth/dashboard'
+      path: '/dashboard'
+      fullPath: '/auth/dashboard'
+      preLoaderRoute: typeof AuthDashboardImport
+      parentRoute: typeof AuthImport
     }
     '/oauth/redirect': {
       id: '/oauth/redirect'
@@ -95,8 +95,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
-  AuthRoute,
-  DashboardRoute,
+  AuthRoute: AuthRoute.addChildren({ AuthDashboardRoute }),
   AboutLazyRoute,
   OauthRedirectRoute,
 })
@@ -111,7 +110,6 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/auth",
-        "/dashboard",
         "/about",
         "/oauth/redirect"
       ]
@@ -120,13 +118,17 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "index.lazy.tsx"
     },
     "/auth": {
-      "filePath": "auth.tsx"
-    },
-    "/dashboard": {
-      "filePath": "dashboard.tsx"
+      "filePath": "auth.tsx",
+      "children": [
+        "/auth/dashboard"
+      ]
     },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/auth/dashboard": {
+      "filePath": "auth.dashboard.tsx",
+      "parent": "/auth"
     },
     "/oauth/redirect": {
       "filePath": "oauth.redirect.tsx"
