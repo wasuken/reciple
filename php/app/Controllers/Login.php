@@ -6,9 +6,41 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 use App\Models\LoginModel;
+use App\Models\UserModel;
 
 class Login extends BaseController
 {
+    // プロフィールの送付とcookieの確認もかねてる。
+    public function getUserProfie()
+    {
+        $authToken = get_cookie('auth_token');
+        try{
+            if($authToken){
+                $decodedJWT = JWT::decode($authToken, new Key(getenv('JWT_SECRET_KEY'), 'HS256'));
+                $userId = $decodedJWT['sub'];
+
+                $model = new UserModel();
+                $user = $model->where('user_id', $userId)->first();
+                if($user){
+                    return $this->response->setJSON([
+                        'user_id' => $user->user_id,
+                        'name' => $user->name,
+                        'email' => $user->email
+                    ]);
+                }else{
+                    throw new Exception('user_id is not found.');
+                }
+            }else{
+                throw new Exception('auth_token is not set.');
+            }
+        }catch(\Exception $e){
+            log_message('error', $e->getMessage());
+            return $this
+                ->response
+                ->setStatusCode(400)
+                ->setJSON(['message' => $e->getMessage()]);
+        }
+    }
     public function google()
     {
         $code = $this->request->getPost('code');
@@ -63,7 +95,7 @@ class Login extends BaseController
             'aud' => getenv('JWT_SECRET_AUDIENCE'),
             'iat' => time(),
             'nbf' => time(),
-            'exp' => time() + 3600, // トークンの有効期限を1時間とする
+            'exp' => time() + 3600, // トークンの有効期限を1時間とるす
             'sub' => $userId,
         ];
 
