@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import axios from "axios";
 import { useAuth } from "@/auth";
 

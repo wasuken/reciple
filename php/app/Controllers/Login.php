@@ -11,21 +11,22 @@ use App\Models\UserModel;
 class Login extends BaseController
 {
     // プロフィールの送付とcookieの確認もかねてる。
-    public function getUserProfie()
+    public function getUserProfile()
     {
-        $authToken = get_cookie('auth_token');
+        $authToken = $this->request->getCookie('auth_token');
         try{
             if($authToken){
                 $decodedJWT = JWT::decode($authToken, new Key(getenv('JWT_SECRET_KEY'), 'HS256'));
-                $userId = $decodedJWT['sub'];
+                $userId = $decodedJWT->sub;
 
                 $model = new UserModel();
-                $user = $model->where('user_id', $userId)->first();
+                $user = $model->where('id', $userId)->first();
+
                 if($user){
                     return $this->response->setJSON([
-                        'user_id' => $user->user_id,
-                        'name' => $user->name,
-                        'email' => $user->email
+                        'user_id' => $user['id'],
+                        'name' => $user['name'],
+                        'email' => $user['email']
                     ]);
                 }else{
                     throw new Exception('user_id is not found.');

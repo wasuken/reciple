@@ -1,7 +1,18 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { GoogleLogin } from "@react-oauth/google";
 
-export const Route = createLazyFileRoute("/")({
+export const Route = createFileRoute("/")({
+	beforeLoad: ({ context, location }) => {
+		console.log(context);
+		if (context.auth.isAuthenticated) {
+			throw redirect({
+				to: "/auth/dashboard",
+				search: {
+					redirect: location.href,
+				},
+			});
+		}
+	},
 	component: Index,
 });
 
