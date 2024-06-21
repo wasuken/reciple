@@ -92,25 +92,6 @@ class LoginModel extends Model
             $user->id = $newUserId;
         }
 
-        // Generate JWT token
-        $key = getenv('JWT_SECRET_KEY');
-        $iss = getenv('JWT_SECRET_ISSUER');
-        $aud = getenv('JWT_SECRET_AUDIENCE');
-        $payload = [
-            'iss' => $iss,
-            'aud' => $aud,
-            'iat' => time(),
-            'nbf' => time(),
-            'exp' => time() + 3600,
-            'sub' => $user->id,
-            'name' => $user->name,
-        ];
-
-        $jwt = JWT::encode($payload, $key, 'HS256');
-
-        // Set JWT token as HTTP-only cookie
-        setcookie('access_token', $jwt, time() + 3600, '/', '', false, true);
-
         return $user;
     }
 }
