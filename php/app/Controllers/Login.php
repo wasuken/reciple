@@ -13,6 +13,7 @@ class Login extends BaseController
     // プロフィールの送付とcookieの確認もかねてる。
     public function getUserProfile()
     {
+        helper('cookie');
         $authToken = $this->request->getCookie('auth_token');
         try{
             if($authToken){
@@ -29,13 +30,15 @@ class Login extends BaseController
                         'email' => $user['email']
                     ]);
                 }else{
-                    throw new Exception('user_id is not found.');
+                    throw new \Exception('user_id is not found.');
                 }
             }else{
-                throw new Exception('auth_token is not set.');
+                throw new \Exception('auth_token is not set.');
             }
         }catch(\Exception $e){
             log_message('error', $e->getMessage());
+            // 期限切の可能性もあるので、削除する。
+            delete_cookie('auth_token');
             return $this
                 ->response
                 ->setStatusCode(400)
