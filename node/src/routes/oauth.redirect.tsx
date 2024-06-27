@@ -8,7 +8,7 @@ export const Route = createFileRoute("/oauth/redirect")({
 });
 
 function OAuth() {
-	const { login } = useAuth();
+	const { login, fetchUserProfile } = useAuth();
 	const navigate = useNavigate({ from: "/oauth/redirect" });
 	const [code, setCode] = useState<string | null>(null);
 	useEffect(() => {
@@ -35,7 +35,7 @@ function OAuth() {
 				});
 
 				console.log(response.data);
-				navigate({ to: "/auth/dashboard" });
+				await fetchUserProfile();
 			} catch (error) {
 				console.error("Failed to fetch access token:", error);
 				navigate({ to: "/" });

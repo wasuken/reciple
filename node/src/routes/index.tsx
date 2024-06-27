@@ -2,8 +2,7 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { GoogleLogin } from "@react-oauth/google";
 
 export const Route = createFileRoute("/")({
-	beforeLoad: ({ context, location }) => {
-		console.log(context);
+	beforeLoad: async ({ context, location }) => {
 		if (context.auth.isAuthenticated) {
 			throw redirect({
 				to: "/auth/dashboard",

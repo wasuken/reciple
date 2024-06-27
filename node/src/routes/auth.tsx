@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, Suspense } from "react";
 import {
 	createFileRoute,
 	Link,
@@ -10,7 +10,7 @@ import {
 import { useAuth } from "@/auth";
 
 export const Route = createFileRoute("/auth")({
-	beforeLoad: ({ context, location }) => {
+	beforeLoad: async ({ context, location }) => {
 		if (!context.auth.isAuthenticated) {
 			throw redirect({
 				to: "/",
@@ -20,20 +20,26 @@ export const Route = createFileRoute("/auth")({
 			});
 		}
 	},
-	component: AuthLayout,
+	component: AuthLayoutSuspense,
 });
+
+function AuthLayoutSuspense() {
+	return (
+		<Suspense fallback={<>Loading...</>}>
+			<AuthLayout />
+		</Suspense>
+	);
+}
 
 function AuthLayout() {
 	const router = useRouter();
 	const navigate = Route.useNavigate();
-	const auth = useAuth();
+	const { logout } = useAuth();
 
 	const handleLogout = () => {
 		if (window.confirm("Are you sure you want to logout?")) {
-			auth.logout().then(() => {
-				router.invalidate().finally(() => {
-					navigate({ to: "/" });
-				});
+			logout().then(() => {
+				router.invalidate().then(() => navigate({ to: "/" }));
 			});
 		}
 	};
@@ -43,14 +49,6 @@ function AuthLayout() {
 			<h1>Authenticated Route</h1>
 			<p>This route's content is only visible to authenticated users.</p>
 			<ul className="py-2 flex gap-2">
-				<li>
-					<Link
-						to="/dashboard"
-						className="hover:underline data-[status='active']:font-semibold"
-					>
-						Dashboard
-					</Link>
-				</li>
 				<li>
 					<button
 						type="button"

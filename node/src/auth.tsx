@@ -1,4 +1,12 @@
 import React, { useEffect, useState } from "react";
+import {
+	createFileRoute,
+	Link,
+	Outlet,
+	redirect,
+	useNavigate,
+	useRouter,
+} from "@tanstack/react-router";
 import axios from "axios";
 
 export interface AuthContext {
@@ -16,12 +24,16 @@ const redirectUri = import.meta.env.VITE_APP_GOOGLE_CLIENT_REDIRECT;
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<string | null>(null);
-	const [isAuthenticated, setIsLoggedIn] = useState<boolean>(!!user);
+	const isAuthenticated = !!user;
 
 	const logout = React.useCallback(async () => {
-		setStoredUser(null);
-		setUser(null);
-	}, []);
+		const res = await axios.get(`/api/logout`, {
+			withCredentials: true,
+		});
+		if (res.status === 200) {
+			setUser(null);
+		}
+	}, [setUser]);
 
 	const loginWithGoogle = (): void => {
 		const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=profile email`;
@@ -33,8 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			withCredentials: true,
 		});
 		if (res.status === 200) {
-			setUser(res.name);
-			setIsLoggedIn(true);
+			setUser(res.data.name);
 			console.log("success");
 		}
 	};
