@@ -11,7 +11,10 @@ use CodeIgniter\Router\RouteCollection;
 $routes->group('api', static function ($routes) {
     $routes->post('login', 'Login::id_password');
     $routes->post('login/google', 'Login::google');
-    $routes->get('login/check', 'Login::getUserProfile');
-    $routes->get('logout', 'Logout::logout');
-});
 
+    $routes->group('auth', static function($routes){
+        $routes->get('check', 'Login::getUserProfile');
+        $routes->get('recipes', 'Recipe::index');
+        $routes->get('logout', 'Logout::logout');
+    });
+});

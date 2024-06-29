@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controllers;
+
 use Google_Client;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -15,27 +16,27 @@ class Login extends BaseController
     {
         helper('cookie');
         $authToken = $this->request->getCookie('auth_token');
-        try{
-            if($authToken){
+        try {
+            if($authToken) {
                 $decodedJWT = JWT::decode($authToken, new Key(getenv('JWT_SECRET_KEY'), 'HS256'));
                 $userId = $decodedJWT->sub;
 
                 $model = new UserModel();
                 $user = $model->where('id', $userId)->first();
 
-                if($user){
+                if($user) {
                     return $this->response->setJSON([
                         'user_id' => $user['id'],
                         'name' => $user['name'],
                         'email' => $user['email']
                     ]);
-                }else{
+                } else {
                     throw new \Exception('user_id is not found.');
                 }
-            }else{
+            } else {
                 throw new \Exception('auth_token is not set.');
             }
-        }catch(\Exception $e){
+        } catch(\Exception $e) {
             log_message('error', $e->getMessage());
             // 期限切の可能性もあるので、削除する。
             delete_cookie('auth_token');
