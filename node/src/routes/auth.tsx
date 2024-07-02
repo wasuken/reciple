@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 
 import { useAuth } from "@/auth";
+import styles from "./auth.module.css";
 
 export const Route = createFileRoute("/auth")({
 	beforeLoad: async ({ context, location }) => {
@@ -45,24 +46,44 @@ function AuthLayout() {
 	};
 
 	return (
-		<div className="p-2 h-full">
-			<h1>Authenticated Route</h1>
-			<ul className="py-2 flex gap-2">
-				<li>
-					<Link to="/auth/recipes">recipes</Link>
-				</li>
-				<li>
-					<button
-						type="button"
-						className="hover:underline"
-						onClick={handleLogout}
-					>
-						Logout
-					</button>
-				</li>
-			</ul>
-			<hr />
-			<Outlet />
+		<div className={styles.container}>
+			<header className={styles.header}>
+				<h1>レシピ共有サイト</h1>
+				<nav>
+					<ul className={styles.navList}>
+						<li>
+							<Link to="/" className={styles.linkButton}>
+								ホーム
+							</Link>
+						</li>
+						<li>
+							<Link to="/about" className={styles.linkButton}>
+								サイトについて
+							</Link>
+						</li>
+						<li>
+							<Link to="/auth/recipes" className={styles.linkButton}>
+								recipes
+							</Link>
+						</li>
+						<li>
+							<button
+								type="button"
+								className={styles.linkButton}
+								onClick={handleLogout}
+							>
+								Logout
+							</button>
+						</li>
+					</ul>
+				</nav>
+			</header>
+			<main className={styles.main}>
+				<Outlet />
+			</main>
+			<footer className={styles.footer}>
+				<p>© 2024 レシピ共有サイト. All rights reserved.</p>
+			</footer>
 		</div>
 	);
 }
