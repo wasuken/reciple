@@ -47,8 +47,10 @@ function AuthLayout() {
 	return (
 		<div className="p-2 h-full">
 			<h1>Authenticated Route</h1>
-			<p>This route's content is only visible to authenticated users.</p>
 			<ul className="py-2 flex gap-2">
+				<li>
+					<Link to="/auth/recipes">recipes</Link>
+				</li>
 				<li>
 					<button
 						type="button"

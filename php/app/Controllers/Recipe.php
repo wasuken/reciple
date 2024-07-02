@@ -17,4 +17,19 @@ class Recipe extends BaseController
         $recipeList = $model->list();
         return $this->response->setJSON($recipeList);
     }
+    /**
+      レシピ情報返却。
+     */
+    public function show($id = null)
+    {
+        if($id === null) {
+            return $this
+                ->response
+                ->setStatusCode(400)
+                ->setJSON(['message' => 'id is null.']);
+        }
+        $model = new RecipeModel();
+        $recipe = $model->find($id);
+        return $this->response->setJSON($recipe);
+    }
 }

@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const isAuthenticated = !!user;
 
 	const logout = React.useCallback(async () => {
-		const res = await axios.get(`/api/logout`, {
+		const res = await axios.get(`/api/auth/logout`, {
 			withCredentials: true,
 		});
 		if (res.status === 200) {
@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	};
 
 	const fetchUserProfile = async () => {
-		const res = await axios.get(`/api/login/check`, {
+		const res = await axios.get(`/api/auth/check`, {
 			withCredentials: true,
 		});
 		if (res.status === 200) {
