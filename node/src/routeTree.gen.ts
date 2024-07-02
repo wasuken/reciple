@@ -18,7 +18,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as OauthRedirectImport } from './routes/oauth.redirect'
 import { Route as AuthRecipesImport } from './routes/auth.recipes'
 import { Route as AuthDashboardImport } from './routes/auth.dashboard'
-import { Route as AuthRecipesRecipeIdImport } from './routes/auth.recipes.$recipeId'
+import { Route as AuthRecipeRecipeIdImport } from './routes/auth.recipe.$recipeId'
 
 // Create Virtual Routes
 
@@ -56,9 +56,9 @@ const AuthDashboardRoute = AuthDashboardImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthRecipesRecipeIdRoute = AuthRecipesRecipeIdImport.update({
-  path: '/$recipeId',
-  getParentRoute: () => AuthRecipesRoute,
+const AuthRecipeRecipeIdRoute = AuthRecipeRecipeIdImport.update({
+  path: '/recipe/$recipeId',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -107,12 +107,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OauthRedirectImport
       parentRoute: typeof rootRoute
     }
-    '/auth/recipes/$recipeId': {
-      id: '/auth/recipes/$recipeId'
-      path: '/$recipeId'
-      fullPath: '/auth/recipes/$recipeId'
-      preLoaderRoute: typeof AuthRecipesRecipeIdImport
-      parentRoute: typeof AuthRecipesImport
+    '/auth/recipe/$recipeId': {
+      id: '/auth/recipe/$recipeId'
+      path: '/recipe/$recipeId'
+      fullPath: '/auth/recipe/$recipeId'
+      preLoaderRoute: typeof AuthRecipeRecipeIdImport
+      parentRoute: typeof AuthImport
     }
   }
 }
@@ -123,9 +123,8 @@ export const routeTree = rootRoute.addChildren({
   IndexRoute,
   AuthRoute: AuthRoute.addChildren({
     AuthDashboardRoute,
-    AuthRecipesRoute: AuthRecipesRoute.addChildren({
-      AuthRecipesRecipeIdRoute,
-    }),
+    AuthRecipesRoute,
+    AuthRecipeRecipeIdRoute,
   }),
   AboutLazyRoute,
   OauthRedirectRoute,
@@ -152,7 +151,8 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "auth.tsx",
       "children": [
         "/auth/dashboard",
-        "/auth/recipes"
+        "/auth/recipes",
+        "/auth/recipe/$recipeId"
       ]
     },
     "/about": {
@@ -164,17 +164,14 @@ export const routeTree = rootRoute.addChildren({
     },
     "/auth/recipes": {
       "filePath": "auth.recipes.tsx",
-      "parent": "/auth",
-      "children": [
-        "/auth/recipes/$recipeId"
-      ]
+      "parent": "/auth"
     },
     "/oauth/redirect": {
       "filePath": "oauth.redirect.tsx"
     },
-    "/auth/recipes/$recipeId": {
-      "filePath": "auth.recipes.$recipeId.tsx",
-      "parent": "/auth/recipes"
+    "/auth/recipe/$recipeId": {
+      "filePath": "auth.recipe.$recipeId.tsx",
+      "parent": "/auth"
     }
   }
 }
