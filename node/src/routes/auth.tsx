@@ -53,17 +53,17 @@ function AuthLayout() {
 					<ul className={styles.navList}>
 						<li>
 							<Link to="/" className={styles.linkButton}>
-								ホーム
+								Home
 							</Link>
 						</li>
 						<li>
 							<Link to="/about" className={styles.linkButton}>
-								サイトについて
+								About
 							</Link>
 						</li>
 						<li>
 							<Link to="/auth/recipes" className={styles.linkButton}>
-								recipes
+								Recipes
 							</Link>
 						</li>
 						<li>
