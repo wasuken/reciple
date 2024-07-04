@@ -13,8 +13,21 @@ class Recipe extends BaseController
      */
     public function index()
     {
+        $page = $this->request->getGet('page') ?? 1;
+        $pageSize = $this->request->getGet('pageSize') ?? 10;
+        $data = [
+            'page' => $page,
+            'pageSize' => $pageSize,
+        ];
+        $rules = [
+            'page' => 'permit_empty|numeric',
+            'pageSize' => 'permit_empty|numeric'
+        ];
+        if(!$this->validateData($data, $rules)){
+            return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
+        }
         $model = new RecipeModel();
-        $recipeList = $model->list();
+        $recipeList = $model->list($page, $pageSize);
         return $this->response->setJSON($recipeList);
     }
     /**

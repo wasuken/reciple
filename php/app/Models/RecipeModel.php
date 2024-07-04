@@ -46,15 +46,24 @@ class RecipeModel extends Model
 
     /**
       レシピ情報にレシピ画像、レシピタグ、タグテーブルを結合した結果を配列で返却する。
-     */
-    public function list()
+    */
+    public function list($page = 1, $pageSize = 10)
     {
+        // ページ番号とページサイズのバリデーション
+        $page = max(1, (int)$page);
+        $pageSize = max(1, (int)$pageSize);
+
+        // OFFSETの計算
+        $offset = ($page - 1) * $pageSize;
+
         $query = $this->db->query("
 SELECT r.id, r.title, r.user_id, r.unique_string_id, r.recipe_text, r.created_at,
     (SELECT JSON_ARRAYAGG(image_path) FROM recipe_images ri WHERE ri.recipe_id = r.id) AS images,
     (SELECT JSON_ARRAYAGG(t.name) FROM recipe_tags rt JOIN tags t ON rt.tag_id = t.id WHERE rt.recipe_id = r.id) AS tags
-FROM recipes r;
-");
+FROM recipes r
+LIMIT ? OFFSET ?;
+", [$pageSize, $offset]);
         return $query->getResultArray();
     }
+
 }
