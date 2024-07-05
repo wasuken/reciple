@@ -12,6 +12,9 @@ export default defineConfig({
   },
   plugins: [react(), TanStackRouterVite()],
   server: {
+    watch: {
+      usePolling: true,
+    },
     port: 3000,
     host: true,
   },
