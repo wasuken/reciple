@@ -46,6 +46,9 @@ class RecipeModel extends Model
 
     /**
       レシピ情報にレシピ画像、レシピタグ、タグテーブルを結合した結果を配列で返却する。
+      @param int $page
+      $param int $pageSize
+      @return mixied ($records, totalPages)
     */
     public function list($page = 1, $pageSize = 10)
     {
@@ -56,6 +59,14 @@ class RecipeModel extends Model
         // OFFSETの計算
         $offset = ($page - 1) * $pageSize;
 
+        // 全レコード数を取得するクエリ
+        $totalCountQuery = $this->db->query("SELECT COUNT(*) AS total FROM recipes");
+        $totalCountResult = $totalCountQuery->getRow();
+        $totalCount = (int)$totalCountResult->total;
+
+        // トータルページ数の計算
+        $totalPages = ceil($totalCount / $pageSize);
+
         $query = $this->db->query("
 SELECT r.id, r.title, r.user_id, r.unique_string_id, r.recipe_text, r.created_at,
     (SELECT JSON_ARRAYAGG(image_path) FROM recipe_images ri WHERE ri.recipe_id = r.id) AS images,
@@ -63,7 +74,7 @@ SELECT r.id, r.title, r.user_id, r.unique_string_id, r.recipe_text, r.created_at
 FROM recipes r
 LIMIT ? OFFSET ?;
 ", [$pageSize, $offset]);
-        return $query->getResultArray();
+        return [$query->getResultArray(), $totalPages];
     }
 
 }

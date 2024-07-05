@@ -27,8 +27,13 @@ class Recipe extends BaseController
             return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
         }
         $model = new RecipeModel();
-        $recipeList = $model->list($page, $pageSize);
-        return $this->response->setJSON($recipeList);
+        $result  = $model->list($page, $pageSize);
+        $recipeList = $result[0];
+        $totalPages = $result[1];
+        return $this->response->setJSON([
+            'recipeList'  => $recipeList,
+            'totalPages' => $totalPages,
+        ]);
     }
     /**
       レシピ情報返却。

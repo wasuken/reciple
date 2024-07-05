@@ -1,10 +1,15 @@
 services:
   php:
+    container_name: php
     build:
       context: .
       dockerfile: Dockerfile.php
-    container_name: php
+      args:
+        USER_ID: ${USER_ID:-1000}
     working_dir: /var/www/html
+    user: "${USER_ID}:${USER_ID}"
+    environment:
+      - USER_ID=${USER_ID:-1000}
     volumes:
       - ./php:/var/www/html
     networks:
