@@ -1,7 +1,6 @@
 FROM php:8.3-fpm
 
 ARG USER_ID=1000
-ENV USER_ID=${USER_ID}
 
 RUN apt-get update && apt-get install -y \
     libicu-dev \
