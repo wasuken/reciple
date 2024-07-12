@@ -41,15 +41,7 @@ class AuthFilter implements FilterInterface
         } catch(\Exception $e) {
             log_message('error', $e->getMessage());
             // 期限切の可能性もあるので、削除する。
-            Services::response()
-                ->setCookie('auth_token', '', [
-                'expires' => '',
-                'path' => '/',
-                'domain' => '',
-                'secure' => false,
-                'httponly' => false,
-                'samesite' => 'Lax',
-            ]);
+            setcookie('auth_token', '', time() - 3600, '/');
             return Services::response()
                 ->setJSON(['error' => 'Filter: Invalid JWT token'])
                 ->setStatusCode(400);
