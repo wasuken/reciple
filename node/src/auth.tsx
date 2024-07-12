@@ -15,6 +15,7 @@ export interface AuthContext {
   logout: () => Promise<void>;
   user: string | null;
   fetchUserProfile: () => Promise<void>;
+  loading: boolean;
 }
 
 const AuthContext = React.createContext<AuthContext | null>(null);
@@ -24,6 +25,7 @@ const redirectUri = import.meta.env.VITE_APP_GOOGLE_CLIENT_REDIRECT;
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const isAuthenticated = !!user;
 
   const logout = React.useCallback(async () => {
@@ -50,7 +52,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
   useEffect(() => {
-    fetchUserProfile().then(() => console.log("fetched"));
+    setLoading(true);
+    fetchUserProfile()
+      .finally(() => {
+	setLoading(false);
+      });
   }, []);
 
   return (
@@ -61,6 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login: loginWithGoogle,
         logout,
         fetchUserProfile,
+	loading,
       }}
     >
       {children}
