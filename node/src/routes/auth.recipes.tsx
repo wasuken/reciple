@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   createFileRoute,
   Outlet,
@@ -10,11 +10,14 @@ import { GoogleLogin } from "@react-oauth/google";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import styles from "./auth.recipes.module.css";
 
-import Pagination from '@/components/Pagination';
-import { RecipeIncludeTagsAndImages } from '@/types'
+import Pagination from "@/components/Pagination";
+import { RecipeIncludeTagsAndImages } from "@/types";
+import authBeforeLoad from "./authBeforeLoad";
 
 const fetchRecipeList = async (page = 1, pageSize = 10) => {
-  const res = await fetch(`/api/auth/recipes?page=${page}&pageSize=${pageSize}`);
+  const res = await fetch(
+    `/api/auth/recipes?page=${page}&pageSize=${pageSize}`
+  );
   if (res.ok) {
     const data = await res.json();
     return data;
@@ -26,6 +29,7 @@ export function fetchErrorComponent({ error }: ErrorComponentProps) {
 }
 
 export const Route = createFileRoute("/auth/recipes")({
+  beforeLoad: authBeforeLoad,
   component: Recipes,
   errorComponent: fetchErrorComponent,
   notFoundComponent: () => {
@@ -38,7 +42,9 @@ function Recipes() {
   const initData = Route.useLoaderData();
   const [totalPages, setTotalPages] = useState<number>(initData.totalPages);
   const [currentPage, setCurrentPage] = useState(1);
-  const [recipes, setRecipes] = useState<RecipeIncludeTagsAndImages[]>(initData.recipeList);
+  const [recipes, setRecipes] = useState<RecipeIncludeTagsAndImages[]>(
+    initData.recipeList
+  );
   const pageSize = 10;
 
   const onPageChange = async (page: number) => {
@@ -49,7 +55,11 @@ function Recipes() {
   };
   return (
     <>
-      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={onPageChange} />
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
+      />
       <ul className={styles.recipeList}>
         {recipes.map((recipe) => (
           <li key={recipe.id} className={styles.recipeItem}>
@@ -61,7 +71,10 @@ function Recipes() {
                 {recipe.title}
               </Link>
             </h3>
-            <Link to="/auth/recipe/$recipeId" params={{ recipeId: recipe.id }}>
+            <Link
+              to="/auth/recipe/show/$recipeId"
+              params={{ recipeId: recipe.id }}
+            >
               <img
                 src={
                   recipe.images && recipe.images.length > 0
@@ -88,7 +101,11 @@ function Recipes() {
           </li>
         ))}
       </ul>
-      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={onPageChange} />
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
+      />
       <div className="col-span-3 py-2 px-4">
         <Outlet />
       </div>

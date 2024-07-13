@@ -8,7 +8,8 @@ export const Route = createFileRoute("/oauth/redirect")({
 });
 
 function OAuth() {
-  const { login, fetchUserProfile } = useAuth();
+  const { login, fetchUserProfile, loading, setLoading, isAuthenticated } =
+    useAuth();
   const navigate = useNavigate({ from: "/oauth/redirect" });
   const [code, setCode] = useState<string | null>(null);
   useEffect(() => {
@@ -34,22 +35,26 @@ function OAuth() {
           withCredentials: true,
         });
 
-        console.log(response.data);
+        // console.log(response.data);
         await fetchUserProfile();
       } catch (error) {
         console.error("Failed to fetch access token:", error);
-        navigate({ to: "/" });
+        navigate({ to: "/login" });
       }
     };
 
-    if (code) {
+    // 他の処理中には実行しない
+    if (code && !loading) {
       fetchAccessToken(code);
     }
     // 二度実行されないための対応
     return () => {
       ignore = true;
     };
-  }, [code]);
+  }, [code, loading]);
+  useEffect(() => {
+    if (isAuthenticated) navigate({ to: "/auth" });
+  }, [isAuthenticated, loading]);
 
   return (
     <div className="p-2">

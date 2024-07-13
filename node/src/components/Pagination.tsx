@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Button, HStack } from '@chakra-ui/react';
+import React from "react";
+import { Box, Button, HStack } from "@chakra-ui/react";
 
 interface PaginationProps {
   totalPages: number;
@@ -7,7 +7,11 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPageChange }) => {
+const Pagination: React.FC<PaginationProps> = ({
+  totalPages,
+  currentPage,
+  onPageChange,
+}) => {
   const createPageNumbers = () => {
     let pages = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -15,8 +19,8 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPage
         <Button
           key={i}
           onClick={() => onPageChange(i)}
-          colorScheme={i === currentPage ? 'teal' : 'gray'}
-          variant={i === currentPage ? 'solid' : 'outline'}
+          colorScheme={i === currentPage ? "teal" : "gray"}
+          variant={i === currentPage ? "solid" : "outline"}
         >
           {i}
         </Button>
@@ -26,8 +30,8 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, onPage
   };
   const onClick = (i: number) => {
     const np = currentPage + i;
-    if(np > 0 && np <= totalPages) onPageChange(currentPage + i);
-  }
+    if (np > 0 && np <= totalPages) onPageChange(currentPage + i);
+  };
 
   return (
     <HStack spacing={2}>

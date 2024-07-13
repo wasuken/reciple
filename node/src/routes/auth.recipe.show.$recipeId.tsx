@@ -3,6 +3,7 @@ import { useSuspenseQuery, queryClient } from "@tanstack/react-query";
 import { GoogleLogin } from "@react-oauth/google";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import styles from "./auth.recipe.module.css";
+import authBeforeLoad from "./authBeforeLoad";
 
 const fetchRecipe = async (id: number) => {
   const res = await fetch(`/api/auth/recipe/${id}`);
@@ -12,7 +13,8 @@ const fetchRecipe = async (id: number) => {
   }
 };
 
-export const Route = createFileRoute("/auth/recipe/$recipeId")({
+export const Route = createFileRoute("/auth/recipe/show/$recipeId")({
+  beforeLoad: authBeforeLoad,
   component: Recipe,
   loader: async ({ params: { recipeId } }) => fetchRecipe(recipeId),
 });

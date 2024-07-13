@@ -9,39 +9,25 @@ import {
 
 import { useAuth } from "@/auth";
 import styles from "./auth.module.css";
+import authBeforeLoad from "./authBeforeLoad";
+import {sleep} from "@/utils"
 
+// 未認証であれば、ログインページへリダイレクト
 export const Route = createFileRoute("/auth")({
-  beforeLoad: async ({ context, location }) => {
-    if (!context.auth.isAuthenticated) {
-      throw redirect({
-        to: "/",
-        search: {
-          redirect: location.href,
-        },
-      });
-    }
-  },
-  component: AuthLayoutSuspense,
+  beforeLoad: authBeforeLoad,
+  component: AuthLayout,
 });
-
-function AuthLayoutSuspense() {
-  return (
-    <Suspense fallback={<>Loading...</>}>
-      <AuthLayout />
-    </Suspense>
-  );
-}
 
 function AuthLayout() {
   const router = useRouter();
   const navigate = Route.useNavigate();
   const { logout } = useAuth();
 
-  const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      logout().then(() => {
-        router.invalidate().then(() => navigate({ to: "/" }));
-      });
+  const handleLogout = async () => {
+    if (window.confirm("ログアウトしますか？")) {
+      await logout();
+      await sleep(250);
+      navigate({ to: "/login" });
     }
   };
 
@@ -52,13 +38,18 @@ function AuthLayout() {
         <nav>
           <ul className={styles.navList}>
             <li>
-              <Link to="/" className={styles.linkButton}>
+              <Link to="/auth" className={styles.linkButton}>
                 Home
               </Link>
             </li>
             <li>
               <Link to="/auth/recipes" className={styles.linkButton}>
                 Recipes
+              </Link>
+            </li>
+            <li>
+              <Link to="/auth/recipe/new" className={styles.linkButton}>
+                Post Recipe
               </Link>
             </li>
             <li>

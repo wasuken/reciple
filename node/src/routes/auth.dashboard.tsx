@@ -1,7 +1,9 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { GoogleLogin } from "@react-oauth/google";
+import authBeforeLoad from "./authBeforeLoad";
 
 export const Route = createFileRoute("/auth/dashboard")({
+  beforeLoad: authBeforeLoad,
   component: Dashboard,
 });
 

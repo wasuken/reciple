@@ -2,8 +2,7 @@ import React, { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ChakraProvider } from '@chakra-ui/react'
-
+import { ChakraProvider } from "@chakra-ui/react";
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
@@ -38,13 +37,13 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ChakraProvider>
-	<AuthProvider>
+        <AuthProvider>
           <GoogleOAuthProvider
             clientId={import.meta.env.VITE_APP_GOOGLE_CLIENT_ID}
           >
             <InnerApp />
           </GoogleOAuthProvider>
-	</AuthProvider>
+        </AuthProvider>
       </ChakraProvider>
     </StrictMode>
   );

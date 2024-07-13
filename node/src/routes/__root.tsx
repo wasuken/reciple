@@ -16,16 +16,15 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function Root() {
   const { loading } = useAuth();
-  console.log("debugs", loading);
-  if(loading) {
+  console.log('root', loading)
+  if (loading) {
     return <>Loading...</>;
   }
-  console.log("debuge", loading);
   return (
     <>
       <hr />
       <Outlet />
       <TanStackRouterDevtools />
     </>
-  )
+  );
 }

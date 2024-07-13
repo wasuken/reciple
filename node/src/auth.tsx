@@ -8,6 +8,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import axios from "axios";
+import { sleep } from "./utils";
 
 export interface AuthContext {
   isAuthenticated: boolean;
@@ -16,6 +17,7 @@ export interface AuthContext {
   user: string | null;
   fetchUserProfile: () => Promise<void>;
   loading: boolean;
+  setLoading: (v: boolean) => void;
 }
 
 const AuthContext = React.createContext<AuthContext | null>(null);
@@ -25,17 +27,18 @@ const redirectUri = import.meta.env.VITE_APP_GOOGLE_CLIENT_REDIRECT;
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const isAuthenticated = !!user;
 
   const logout = React.useCallback(async () => {
+    await sleep(250);
     const res = await axios.get(`/api/auth/logout`, {
       withCredentials: true,
     });
     if (res.status === 200) {
       setUser(null);
     }
-  }, [setUser]);
+  }, []);
 
   const loginWithGoogle = (): void => {
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=profile email`;
@@ -51,12 +54,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("success");
     }
   };
+
   useEffect(() => {
     setLoading(true);
-    fetchUserProfile()
-      .finally(() => {
-	setLoading(false);
-      });
+    fetchUserProfile().finally(() => {
+      setLoading(false);
+    });
   }, []);
 
   return (
@@ -67,7 +70,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login: loginWithGoogle,
         logout,
         fetchUserProfile,
-	loading,
+        loading,
+	setLoading,
       }}
     >
       {children}
