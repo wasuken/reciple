@@ -79,7 +79,7 @@ class Recipe extends BaseController
             return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
         }
         try {
-            $this > model->insert($data);
+            $this->model->insert($data);
             return $this->response->setJSON(['message' => '登録成功']);
         } catch(\Exception $e) {
             log_message('error', $e->getMessage());

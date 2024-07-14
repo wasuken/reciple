@@ -12,7 +12,6 @@ import styles from "./auth.recipes.module.css";
 
 import Pagination from "@/components/Pagination";
 import { RecipeIncludeTagsAndImages } from "@/types";
-import authBeforeLoad from "./authBeforeLoad";
 
 const fetchRecipeList = async (page = 1, pageSize = 10) => {
   const res = await fetch(
@@ -29,7 +28,6 @@ export function fetchErrorComponent({ error }: ErrorComponentProps) {
 }
 
 export const Route = createFileRoute("/auth/recipes")({
-  beforeLoad: authBeforeLoad,
   component: Recipes,
   errorComponent: fetchErrorComponent,
   notFoundComponent: () => {

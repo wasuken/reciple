@@ -13,11 +13,9 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react";
-import authBeforeLoad from "./authBeforeLoad";
 
 export const Route = createFileRoute("/auth/recipe/new")({
   component: RecipeForm,
-  beforeLoad: authBeforeLoad,
 });
 
 function RecipeForm() {

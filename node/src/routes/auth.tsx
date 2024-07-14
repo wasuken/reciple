@@ -9,8 +9,8 @@ import {
 
 import { useAuth } from "@/auth";
 import styles from "./auth.module.css";
-import authBeforeLoad from "./authBeforeLoad";
-import {sleep} from "@/utils"
+import authBeforeLoad from "@/authBeforeLoad";
+import { sleep } from "@/utils";
 
 // 未認証であれば、ログインページへリダイレクト
 export const Route = createFileRoute("/auth")({

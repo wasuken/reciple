@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         fetchUserProfile,
         loading,
-	setLoading,
+        setLoading,
       }}
     >
       {children}
