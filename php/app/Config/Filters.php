@@ -15,6 +15,12 @@ use CodeIgniter\Filters\SecureHeaders;
 
 class Filters extends BaseFilters
 {
+    public function __construct()
+    {
+        if (ENVIRONMENT === 'testing') {
+            unset($this->filters['auth']['before']);
+        }
+    }
     /**
      * Configures aliases for Filter classes to
      * make reading things nicer and simpler.

@@ -16,6 +16,7 @@ $routes->group('api', static function ($routes) {
         $routes->get('check', 'Login::getUserProfile');
         $routes->get('recipes', 'Recipe::index');
         $routes->get('recipe/(:segment)', 'Recipe::show/$1');
+        $routes->post('recipe', 'Recipe::create');
         $routes->get('logout', 'Logout::logout');
     });
 });

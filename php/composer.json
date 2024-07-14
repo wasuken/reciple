@@ -19,7 +19,7 @@
     "fakerphp/faker": "^1.23",
     "friendsofphp/php-cs-fixer": "^3.58",
     "mikey179/vfsstream": "^1.6",
-    "phpunit/phpunit": "^10.5.16"
+    "phpunit/phpunit": "^10.5"
   },
   "autoload": {
     "psr-4": {
@@ -38,7 +38,7 @@
     "sort-packages": true
   },
   "scripts": {
-    "test": "phpunit",
+    "test": "phpunit --no-coverage",
     "format": "php-cs-fixer fix"
   }
 }
