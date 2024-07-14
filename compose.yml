@@ -32,7 +32,7 @@ services:
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
+      MYSQL_DATABASE: recipe
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     volumes:
