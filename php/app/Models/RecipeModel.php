@@ -77,4 +77,30 @@ LIMIT ? OFFSET ?;
         return [$query->getResultArray(), $totalPages];
     }
 
+    /**
+      images,tagsをふくんだデータの挿入処理
+      @param $data mixed
+     */
+    public function insertJoinTagsImages($data)
+    {
+        // recipe
+        $this->insert([
+            'title' => $data['title'],
+            'recipe_text' => $data['recipeText'],
+            'user_id' => $data['user_id'],
+        ]);
+        $recipeId = $this->getInsertID();
+        // tags
+        // TODO Create TagModel
+        $tagModel = new RecipeTagModel();
+        // loop
+        $tagParams = [];
+        $tagModel->insertBatch($tagParams);
+        // images
+        // loop
+        $imageParams = [];
+        // TODO ImageModel
+        $imageModel = new RecipeImageModel();
+        $imageModel->insertBatch($imageParams);
+    }
 }

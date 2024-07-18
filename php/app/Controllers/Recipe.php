@@ -7,6 +7,12 @@ use App\Models\RecipeModel;
 class Recipe extends BaseController
 {
     private $model;
+    protected $session;
+
+    public function __construct()
+    {
+        $this->session = \Config\Services::session();
+    }
     public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
     {
         parent::initController($request, $response, $logger);
@@ -56,30 +62,83 @@ class Recipe extends BaseController
         $recipe = $this->model->find($id);
         return $this->response->setJSON($recipe);
     }
+    // 画像アップロードエンドポイント
+    public function uploadImage()
+    {
+        // getFileして$dataにいれると、アップロードされたファイルを検証してくれない
+        $data = [];
+        $rules = [
+            'file' => 'uploaded[file]'
+                . '|is_image[file]'
+                . '|mime_in[file,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
+                . '|max_size[file,2048]',
+        ];
+        if(!$this->validateData($data, $rules)) {
+            return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
+        }
+
+        $img = $this->request->getFile('file');
+        if (!$img->hasMoved()) {
+            $filepath = WRITEPATH . 'uploads/' . $img->store();
+            return $this
+                ->response
+                ->setJSON(['imageUrl' => base_url('uploads/' . $img->getName())]);
+        }
+
+        return $this->fail('The file has already been moved.');
+    }
     /**
       レシピ作成
       POST
      */
     public function create()
     {
-        $user_id = $this->request->getPost('user_id');
+        $authUser = $this->session->get('authUser');
+
+        log_message('error', var_export($authUser, true));
+        if (!$authUser) {
+            return $this
+                ->response
+                ->setStatusCode(401)
+                ->setJSON(['message' => 'Unauthorized']);
+        }
+        $data = $this->request->getJSON(true);
+        $user_id = $authUser['sub'];
         $title = $this->request->getPost('title');
         $recipe_text = $this->request->getPost('recipe_text');
-        $data = [
+        if (!$data) {
+            return $this->fail('Invalid data.');
+        }
+
+        $recipeData = [
+            'title' => $data['title'],
+            'recipe_text' => $data['recipeText'],
+            'images' => $data['images'],
+            'tags' => $data['tags'],
             'user_id' => $user_id,
-            'title' => $title,
-            'recipe_text' => $recipe_text,
         ];
+        log_message('error', var_export($recipeData, true));
         $rules = [
             'user_id' => 'required|is_not_unique[users.id]',
             'title' => 'required|min_length[1]',
             'recipe_text' => 'required|min_length[1]',
+            'images' => 'required|is_array',
+            'images.*' => 'valid_url',
+            'tags' => 'required|is_array',
+            'tags.*' => 'max_length[50]',
         ];
-        if(!$this->validateData($data, $rules)) {
+        if(!$this->validateData($recipeData, $rules)) {
             return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
         }
         try {
-            $this->model->insert($data);
+            $recipeData = [
+                'title' => $data['title'],
+                'recipe_text' => $data['recipeText'],
+                'images' => $data['images'],
+                'tags' => $data['tags'],
+                'user_id' => $user_id,
+            ];
+            $this->model->insertJoinTagsImages($recipeData);
             return $this->response->setJSON(['message' => '登録成功']);
         } catch(\Exception $e) {
             log_message('error', $e->getMessage());

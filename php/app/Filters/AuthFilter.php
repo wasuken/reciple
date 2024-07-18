@@ -11,6 +11,12 @@ use Config\Services;
 
 class AuthFilter implements FilterInterface
 {
+    protected $session;
+
+    public function __construct()
+    {
+        $this->session = \Config\Services::session();
+    }
     /**
      * Do whatever processing this filter needs to do.
      * By default it should not return anything during
@@ -37,7 +43,7 @@ class AuthFilter implements FilterInterface
 
         try {
             $decodedJWT = JWT::decode($authToken, new Key(getenv('JWT_SECRET_KEY'), 'HS256'));
-            $request->setGlobal('authUser', (array) $decodedJWT);
+            $this->session->set('authUser', (array) $decodedJWT);
         } catch(\Exception $e) {
             log_message('error', $e->getMessage());
             // 期限切の可能性もあるので、削除する。
