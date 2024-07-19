@@ -33,11 +33,22 @@ class RecipeTest extends CIUnitTestCase
         $records = $this->db->query('select id from users;')->getResultArray();
         $id = $records[0]['id'];
         $postData = [
-            'user_id' =>$id,
+            'user_id' => $id,
             'title' => 'test',
             'recipe_text' => 'test',
+            'images' => [],
+            'tags' => [],
         ];
-        $result = $this->call('POST', '/api/auth/recipe', $postData);
+        $this->withSession([
+            'authUser' => [
+                'sub' => $id,
+            ]
+        ]);
+        $result = $this
+            ->withBody(json_encode($postData))
+            ->call('POST', '/api/auth/recipe');
+
+        // var_dump($result->getBody());
 
         $result->assertStatus(200);
     }

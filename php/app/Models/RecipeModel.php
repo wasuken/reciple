@@ -80,27 +80,57 @@ LIMIT ? OFFSET ?;
     /**
       images,tagsをふくんだデータの挿入処理
       @param $data mixed
-     */
+    */
     public function insertJoinTagsImages($data)
     {
-        // recipe
-        $this->insert([
-            'title' => $data['title'],
-            'recipe_text' => $data['recipeText'],
-            'user_id' => $data['user_id'],
-        ]);
-        $recipeId = $this->getInsertID();
-        // tags
-        // TODO Create TagModel
-        $tagModel = new RecipeTagModel();
-        // loop
-        $tagParams = [];
-        $tagModel->insertBatch($tagParams);
-        // images
-        // loop
-        $imageParams = [];
-        // TODO ImageModel
-        $imageModel = new RecipeImageModel();
-        $imageModel->insertBatch($imageParams);
+        $this->db->transBegin();
+        try{
+            // recipe
+            $this->insert([
+                'title' => $data['title'],
+                'recipe_text' => $data['recipe_text'],
+                'user_id' => $data['user_id'],
+            ]);
+            $recipeId = $this->getInsertID();
+            // tags
+            if(!empty($data['tags'])){
+                $tagidList = [];
+                $tagModel = new TagModel();
+                $tagParams = [];
+                // タグIDの取得(なければ作成)
+                foreach($data['tags'] as $tag){
+                    $tagId = $tagModel->findOrCreate(['name' => $tag], []);
+                    $tagParams[] = [
+                        'recipe_id' => $recipeId,
+                        'tag_id' => $tagId,
+                    ];
+                }
+                $recipeTagModel = new RecipeTagModel();
+                $recipeTagModel->insertBatch($tagParams);
+            }
+
+            // images
+            if(!empty($data['images'])){
+                $images = $data['images'];
+                $imageParams = [];
+                $cnt = count($images);
+                for($i=0; $i<$cnt; $i++){
+                    $image = $images[$i];
+                    $imageParams[] = [
+                        'recipe_id' => $recipeId,
+                        'image_path' => $image,
+                        'display_order' => $i,
+                    ];
+                }
+                $imageModel = new RecipeImageModel();
+                $imageModel->insertBatch($imageParams);
+            }
+
+            $this->db->transCommit();
+        }catch(\Exception $e){
+            $this->db->transRollback();
+            log_message('error', $e->getMessage());
+            throw $e;
+        }
     }
 }

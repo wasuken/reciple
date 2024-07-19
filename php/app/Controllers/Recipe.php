@@ -107,12 +107,15 @@ class Recipe extends BaseController
         $title = $this->request->getPost('title');
         $recipe_text = $this->request->getPost('recipe_text');
         if (!$data) {
-            return $this->fail('Invalid data.');
+            return $this
+                ->response
+                ->setStatusCode(400)
+                ->setJSON(['message' => 'Invalid data.']);
         }
 
         $recipeData = [
             'title' => $data['title'],
-            'recipe_text' => $data['recipeText'],
+            'recipe_text' => $data['recipe_text'],
             'images' => $data['images'],
             'tags' => $data['tags'],
             'user_id' => $user_id,
@@ -122,18 +125,21 @@ class Recipe extends BaseController
             'user_id' => 'required|is_not_unique[users.id]',
             'title' => 'required|min_length[1]',
             'recipe_text' => 'required|min_length[1]',
-            'images' => 'required|is_array',
-            'images.*' => 'valid_url',
-            'tags' => 'required|is_array',
-            'tags.*' => 'max_length[50]',
+            'images' => 'is_array',
+            'images.*' => 'permit_empty|valid_url',
+            'tags' => 'is_array',
+            'tags.*' => 'permit_empty|max_length[50]',
         ];
         if(!$this->validateData($recipeData, $rules)) {
-            return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
+            log_message('error', var_export($this->validator->getErrors(), true));
+            return $this
+                ->response->setStatusCode(400)
+                ->setJSON($this->validator->getErrors());
         }
         try {
             $recipeData = [
                 'title' => $data['title'],
-                'recipe_text' => $data['recipeText'],
+                'recipe_text' => $data['recipe_text'],
                 'images' => $data['images'],
                 'tags' => $data['tags'],
                 'user_id' => $user_id,
