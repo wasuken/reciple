@@ -27,7 +27,7 @@ export const Route = createFileRoute("/auth/recipe/new")({
 
 interface RecipeFormData {
   title: string;
-  recipeText: string;
+  recipe_text: string;
   images: File[];
   tags: string[];
 }
@@ -41,7 +41,7 @@ const postRecipe = async (data: RecipeFormData) => {
       method: 'POST',
       body: formData
     });
-    if(!response.ok){
+    if (!response.ok) {
       throw new Error('画像アップロードに失敗しました。');
     }
     const result = await response.json();
@@ -65,7 +65,7 @@ const postRecipe = async (data: RecipeFormData) => {
   if (res.ok) {
     const data = await res.json();
     return data;
-  }else{
+  } else {
     throw new Error('Recipeアップロードに失敗しました。');
   }
 }
@@ -91,17 +91,17 @@ function RecipeForm() {
       });
       return;
     }
-    const data: RecipeFormData = { title, recipeText, images, tags };
-    const res = await postRecipe(data);
-    if(res.ok){
+    const data: RecipeFormData = { title, recipe_text: recipeText, images, tags };
+    try{
+      const res = await postRecipe(data);
       toast({
-	title: "レシピ投稿成功",
-	description: "レシピが投稿されました。",
-	status: "success",
-	duration: 3000,
-	isClosable: true,
+        title: "レシピ投稿成功",
+        description: "レシピが投稿されました。",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
       });
-    }else{
+    }catch(e){
       toast({
         title: "登録エラー",
         description: "登録内容に不備があります",
