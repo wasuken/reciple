@@ -58,6 +58,7 @@ class TagModel extends Model
 
         try {
             $record = $this->where($criteria)->first();
+            log_message('debug', var_export([$criteria, $record], true));
 
             if ($record) {
                 $id = $record[$this->primaryKey];

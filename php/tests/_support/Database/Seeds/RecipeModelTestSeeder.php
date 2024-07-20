@@ -12,7 +12,7 @@ class RecipeModelTestSeeder extends Seeder
     public function run(): void
     {
         $this->db->transBegin();
-        try{
+        try {
             $factories = [
                 [
                     'id' => 1,
@@ -27,7 +27,7 @@ class RecipeModelTestSeeder extends Seeder
                 $builder->insert($factory);
             }
             $this->db->transCommit();
-        }catch(\Exception $e){
+        } catch(\Exception $e) {
             $this->db->transRollback();
         }
 

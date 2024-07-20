@@ -44,10 +44,10 @@ class RecipeModelTest extends CIUnitTestCase
         // var_dump($db->query('select * from recipe_images')->getResultArray());
         // var_dump($db->query('select * from recipe_tags')->getResultArray());
 
-        foreach($data['tags'] as $tag){
+        foreach($data['tags'] as $tag) {
             $this->seeInDatabase('tags', ['name' => $tag]);
         }
-        foreach($data['images'] as $image){
+        foreach($data['images'] as $image) {
             $this->seeInDatabase('recipe_images', ['image_path' => $image]);
         }
     }

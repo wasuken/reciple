@@ -39,6 +39,7 @@ class Recipe extends BaseController
             return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
         }
         $result  = $this->model->list($page, $pageSize);
+        // log_message('debug', var_export($result, true));
         $recipeList = $result[0];
         $totalPages = $result[1];
         return $this->response->setJSON([
@@ -59,7 +60,7 @@ class Recipe extends BaseController
                 ->setJSON(['message' => 'id is null.']);
         }
         $this->model = new RecipeModel();
-        $recipe = $this->model->find($id);
+        $recipe = $this->model->findJoinTagsImages($id);
         return $this->response->setJSON($recipe);
     }
     // 画像アップロードエンドポイント
@@ -79,10 +80,10 @@ class Recipe extends BaseController
 
         $img = $this->request->getFile('file');
         if (!$img->hasMoved()) {
-            $filepath = WRITEPATH . 'uploads/' . $img->store();
+            $filepath = WRITEPATH . 'uploads/' . $img->store('stored');
             return $this
                 ->response
-                ->setJSON(['imageUrl' => base_url('uploads/' . $img->getName())]);
+                ->setJSON(['imageUrl' => base_url('uploads/stored/' . $img->getName())]);
         }
 
         return $this->fail('The file has already been moved.');
@@ -95,7 +96,7 @@ class Recipe extends BaseController
     {
         $authUser = $this->session->get('authUser');
 
-        log_message('error', var_export($authUser, true));
+        // log_message('error', var_export($authUser, true));
         if (!$authUser) {
             return $this
                 ->response
@@ -120,7 +121,7 @@ class Recipe extends BaseController
             'tags' => $data['tags'],
             'user_id' => $user_id,
         ];
-        log_message('error', var_export($recipeData, true));
+        // log_message('error', var_export($recipeData, true));
         $rules = [
             'user_id' => 'required|is_not_unique[users.id]',
             'title' => 'required|min_length[1]',
