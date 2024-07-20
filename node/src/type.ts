@@ -11,7 +11,3 @@ export interface RecipeIncludeTagsAndImages extends Recipe {
   tags: string[];
   images: string[];
 }
-
-export interface PostRecipeIncludeTagsAndImages extends RecipeIncludeTagsAndImages {
-  images: 
-}

@@ -6,9 +6,13 @@ import {
   ErrorComponent,
   ErrorComponentProps,
 } from "@tanstack/react-router";
+import { Tag, TagLabel, Box } from "@chakra-ui/react";
 import { GoogleLogin } from "@react-oauth/google";
+
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import styles from "./auth.recipes.module.css";
+
+import RecipeCard from "@/components/RecipeCard";
 
 import Pagination from "@/components/Pagination";
 import { RecipeIncludeTagsAndImages } from "@/types";
@@ -61,41 +65,14 @@ function Recipes() {
       <ul className={styles.recipeList}>
         {recipes.map((recipe) => (
           <li key={recipe.id} className={styles.recipeItem}>
-            <h3>
-              <Link
-                to="/auth/recipe/$recipeId"
-                params={{ recipeId: recipe.id }}
-              >
-                {recipe.title}
-              </Link>
-            </h3>
-            <Link
-              to="/auth/recipe/show/$recipeId"
-              params={{ recipeId: recipe.id }}
-            >
-              <img
-                src={
-                  recipe.images && recipe.images.length > 0
-                    ? recipe.images[0]
-                    : NoRecipeWebp
-                }
-                alt={recipe.title}
-                className={styles.recipeImage}
-              />
-            </Link>
-
-            <p>{recipe.recipe_text}</p>
-            <p>
-              <strong>作成者ID:</strong> {recipe.user_id}
-            </p>
-            <p>
-              <strong>ユニークID:</strong> {recipe.unique_string_id}
-            </p>
-            {recipe.created_at && (
-              <p>
-                <strong>作成日:</strong> {recipe.created_at}
-              </p>
-            )}
+            <RecipeCard
+              recipe={recipe}
+              isLink={true}
+              link={{
+                to: "/auth/recipe/show/$recipeId",
+                params: {recipeId: recipe.id},
+              }}
+            />
           </li>
         ))}
       </ul>

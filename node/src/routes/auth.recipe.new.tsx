@@ -5,7 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import styles from "./auth.recipe.module.css";
 
-import { RecipeIncludeTagsAndImages } from '@/type';
+import { RecipeIncludeTagsAndImages } from "@/type";
 
 import {
   Box,
@@ -18,8 +18,8 @@ import {
   TagLabel,
   TagCloseButton,
   Image,
-  useToast
-} from '@chakra-ui/react';
+  useToast,
+} from "@chakra-ui/react";
 
 export const Route = createFileRoute("/auth/recipe/new")({
   component: RecipeForm,
@@ -33,49 +33,51 @@ interface RecipeFormData {
 }
 
 const postRecipe = async (data: RecipeFormData) => {
-  const imageUploads = await Promise.allSettled(data.images.map(async (image) => {
-    const formData = new FormData();
-    formData.append('file', image);
-    // アップロードAPIのエンドポイントにリクエストを送る
-    const response = await fetch('/api/auth/recipe/image', {
-      method: 'POST',
-      body: formData
-    });
-    if (!response.ok) {
-      throw new Error('画像アップロードに失敗しました。');
-    }
-    const result = await response.json();
-    return result.imageUrl;
-  }));
+  const imageUploads = await Promise.allSettled(
+    data.images.map(async (image) => {
+      const formData = new FormData();
+      formData.append("file", image);
+      // アップロードAPIのエンドポイントにリクエストを送る
+      const response = await fetch("/api/auth/recipe/image", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("画像アップロードに失敗しました。");
+      }
+      const result = await response.json();
+      return result.imageUrl;
+    })
+  );
   const successfulUploads = imageUploads
-    .filter(result => result.status === 'fulfilled')
-    .map(result => (result as PromiseFulfilledResult<string>).value);
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => (result as PromiseFulfilledResult<string>).value);
   const recipeData = {
     ...data,
-    images: successfulUploads
+    images: successfulUploads,
   };
 
   const res = await fetch(`/api/auth/recipe`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(recipeData)
+    body: JSON.stringify(recipeData),
   });
   if (res.ok) {
     const data = await res.json();
     return data;
   } else {
-    throw new Error('Recipeアップロードに失敗しました。');
+    throw new Error("Recipeアップロードに失敗しました。");
   }
-}
+};
 
 function RecipeForm() {
-  const [title, setTitle] = useState('');
-  const [recipeText, setRecipeText] = useState('');
+  const [title, setTitle] = useState("");
+  const [recipeText, setRecipeText] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState('');
+  const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const toast = useToast();
 
@@ -91,8 +93,13 @@ function RecipeForm() {
       });
       return;
     }
-    const data: RecipeFormData = { title, recipe_text: recipeText, images, tags };
-    try{
+    const data: RecipeFormData = {
+      title,
+      recipe_text: recipeText,
+      images,
+      tags,
+    };
+    try {
       const res = await postRecipe(data);
       toast({
         title: "レシピ投稿成功",
@@ -101,7 +108,7 @@ function RecipeForm() {
         duration: 3000,
         isClosable: true,
       });
-    }catch(e){
+    } catch (e) {
       toast({
         title: "登録エラー",
         description: "登録内容に不備があります",
@@ -113,8 +120,8 @@ function RecipeForm() {
     }
 
     // フォームのリセット
-    setTitle('');
-    setRecipeText('');
+    setTitle("");
+    setRecipeText("");
     setImages([]);
     setImagePreviews([]);
     setTags([]);
@@ -124,7 +131,7 @@ function RecipeForm() {
     if (event.target.files) {
       const files = Array.from(event.target.files);
       setImages(files);
-      const previews = files.map(file => URL.createObjectURL(file));
+      const previews = files.map((file) => URL.createObjectURL(file));
       setImagePreviews(previews);
     }
   };
@@ -132,12 +139,12 @@ function RecipeForm() {
   const handleTagAdd = () => {
     if (tagInput && !tags.includes(tagInput)) {
       setTags([...tags, tagInput]);
-      setTagInput('');
+      setTagInput("");
     }
   };
 
   const handleTagRemove = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   return (
@@ -187,20 +194,33 @@ function RecipeForm() {
             type="text"
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleTagAdd())}
+            onKeyDown={(e) =>
+              e.key === "Enter" && (e.preventDefault(), handleTagAdd())
+            }
           />
-          <Button onClick={handleTagAdd} mt={2}>タグを追加</Button>
+          <Button onClick={handleTagAdd} mt={2}>
+            タグを追加
+          </Button>
           <Box mt={2}>
             {tags.map((tag, index) => (
-              <Tag key={index} size="md" borderRadius="full" variant="solid" colorScheme="teal" m={1}>
+              <Tag
+                key={index}
+                size="md"
+                borderRadius="full"
+                variant="solid"
+                colorScheme="teal"
+                m={1}
+              >
                 <TagLabel>{tag}</TagLabel>
                 <TagCloseButton onClick={() => handleTagRemove(tag)} />
               </Tag>
             ))}
           </Box>
         </FormControl>
-        <Button type="submit" colorScheme="teal" width="full">投稿する</Button>
+        <Button type="submit" colorScheme="teal" width="full">
+          投稿する
+        </Button>
       </form>
     </Box>
   );
-};
+}

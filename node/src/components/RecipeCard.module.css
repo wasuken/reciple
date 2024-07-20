@@ -1,6 +1,8 @@
 .container {
 	padding: 20px;
 	background-color: #f5f5f5;
+	display: flex;
+	justify-content: center;
 }
 
 .recipeList {
@@ -13,9 +15,13 @@
 
 .recipeItem {
 	background-color: white;
+	border: 1px solid #ddd;
+	border-radius: 4px;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
+	padding: 5px 15px 5px 15px;
+	width: 60vw;
 }
 
 .recipeImage {
