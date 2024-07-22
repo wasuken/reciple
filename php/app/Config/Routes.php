@@ -10,7 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->group('api', static function ($routes) {
     // 静的ファイルのルートを追加
-    $routes->add('uploads/stored/(:any)', function($file) {
+    $routes->add('uploads/stored/(:any)', function ($file) {
         $path = WRITEPATH . 'uploads/stored/' . $file;
 
         if (file_exists($path)) {
