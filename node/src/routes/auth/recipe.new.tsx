@@ -3,7 +3,7 @@ import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryClient } from "@tanstack/react-query";
 import { GoogleLogin } from "@react-oauth/google";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
-import styles from "./auth.recipe.module.css";
+import styles from "./recipe.module.css";
 
 import { RecipeIncludeTagsAndImages } from "@/type";
 

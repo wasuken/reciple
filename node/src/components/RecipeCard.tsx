@@ -24,7 +24,7 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
     : (el) => el;
   return (
     <div className={styles.recipeItem}>
-      <h3>{genLink(recipe.title)}</h3>
+      <h3 className={styles.recipeTitle}>{genLink(recipe.title)}</h3>
       {genLink(
         <img
           src={
@@ -37,35 +37,39 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
         />
       )}
 
-      <p>{recipe.recipe_text}</p>
+      <div className={styles.recipeMiddleArea}>
+	<div className={styles.recipeBody}>{recipe.recipe_text}</div>
+      </div>
       <p>
         <strong>作成者ID:</strong> {recipe.user_id}
       </p>
       <p>
         <strong>ユニークID:</strong> {recipe.unique_string_id}
       </p>
-      {recipe.tags && recipe.tags.length > 0 && (
-        <Box mt={2}>
-          <h4>Tags</h4>
-          {recipe.tags.map((tag, index) => (
-            <Tag
-              key={index}
-              size="md"
-              borderRadius="full"
-              variant="solid"
-              colorScheme="teal"
-              m={1}
-            >
-              <TagLabel>{tag}</TagLabel>
-            </Tag>
-          ))}
-        </Box>
-      )}
-      {recipe.created_at && (
-        <p>
-          <strong>作成日:</strong> {recipe.created_at}
-        </p>
-      )}
+      <div className={styles.recipeFooter}>
+	      {recipe.tags && recipe.tags.length > 0 && (
+		<Box mt={2}>
+		  <h4>Tags</h4>
+		  {recipe.tags.map((tag, index) => (
+		    <Tag
+		      key={index}
+		      size="md"
+		      borderRadius="full"
+		      variant="solid"
+		      colorScheme="teal"
+		      m={1}
+		    >
+		      <TagLabel>{tag}</TagLabel>
+		    </Tag>
+		  ))}
+		</Box>
+	      )}
+	{recipe.created_at && (
+          <p>
+            <strong>作成日:</strong> {recipe.created_at}
+          </p>
+	)}
+      </div>
     </div>
   );
 }
