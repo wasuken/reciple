@@ -70,7 +70,7 @@ function Recipes() {
               isLink={true}
               link={{
                 to: "/auth/recipe/show/$recipeId",
-                params: {recipeId: recipe.id},
+                params: { recipeId: recipe.id },
               }}
             />
           </li>

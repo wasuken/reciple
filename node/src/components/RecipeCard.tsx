@@ -18,7 +18,7 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
   const genLink = isLink
     ? (el) => {
-      console.log(<Link {...link}>{el}</Link>)
+        console.log(<Link {...link}>{el}</Link>);
         return <Link {...link}>{el}</Link>;
       }
     : (el) => el;
@@ -44,10 +44,10 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
       <p>
         <strong>ユニークID:</strong> {recipe.unique_string_id}
       </p>
-      <Box mt={2}>
-        <h4>Tags</h4>
-        {recipe.tags &&
-          recipe.tags.map((tag, index) => (
+      {recipe.tags && recipe.tags.length > 0 && (
+        <Box mt={2}>
+          <h4>Tags</h4>
+          {recipe.tags.map((tag, index) => (
             <Tag
               key={index}
               size="md"
@@ -59,7 +59,8 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
               <TagLabel>{tag}</TagLabel>
             </Tag>
           ))}
-      </Box>
+        </Box>
+      )}
       {recipe.created_at && (
         <p>
           <strong>作成日:</strong> {recipe.created_at}
