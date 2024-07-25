@@ -12,6 +12,11 @@ down:
 b:
 	docker compose build
 
+init_migr_sdr: init migr seeder
+
+init:
+	docker compose exec php php spark migrate:refresh
+
 migr:
 	docker compose exec php php spark migrate
 
