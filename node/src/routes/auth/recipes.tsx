@@ -12,7 +12,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import styles from "./recipes.module.css";
 
-import RecipeCard from "@/components/RecipeCard";
+import RecipeCard from "./-components/RecipeCard";
 
 import Pagination from "@/components/Pagination";
 import { RecipeIncludeTagsAndImages } from "@/types";

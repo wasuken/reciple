@@ -34,7 +34,7 @@ function AuthLayout() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1>レシピ共有サイト</h1>
+        <h1 className={styles.title}>レシピ共有サイト</h1>
         <nav>
           <ul className={styles.navList}>
             <li>

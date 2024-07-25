@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
-import RecipeCard from "@/components/RecipeCard";
+import RecipeCard from "./-components/RecipeCard";
 import styles from "./recipe.module.css";
 
 const fetchRecipe = async (id: number) => {

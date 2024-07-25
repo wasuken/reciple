@@ -11,3 +11,10 @@ export interface RecipeIncludeTagsAndImages extends Recipe {
   tags: string[];
   images: string[];
 }
+
+export interface RecipeFormData {
+  title: string;
+  recipe_text: string;
+  images: File[];
+  tags: string[];
+}
