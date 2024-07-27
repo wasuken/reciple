@@ -29,6 +29,7 @@ $routes->group('api', static function ($routes) {
 
     $routes->group('auth', static function ($routes) {
         $routes->get('check', 'Login::getUserProfile');
+        $routes->get('tags', 'Tag::index');
         $routes->get('recipes', 'Recipe::index');
         $routes->get('recipe/(:segment)', 'Recipe::show/$1');
         $routes->post('recipe', 'Recipe::create');

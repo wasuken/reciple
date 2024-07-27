@@ -16,7 +16,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function Root() {
   const { loading } = useAuth();
-  console.log("root", loading);
   if (loading) {
     return <>Loading...</>;
   }

@@ -27,18 +27,25 @@ class Recipe extends BaseController
     {
         $page = $this->request->getGet('page') ?? 1;
         $pageSize = $this->request->getGet('pageSize') ?? 10;
+        $query = $this->request->getGet('query') ?? '';
+        $tag = $this->request->getGet('tag') ?? '';
+
         $data = [
             'page' => $page,
             'pageSize' => $pageSize,
+            'query' => $query,
+            'tag' => $tag,
         ];
         $rules = [
             'page' => 'permit_empty|numeric',
-            'pageSize' => 'permit_empty|numeric'
+            'pageSize' => 'permit_empty|numeric',
+            'query' => 'permit_empty|min_length[2]|max_length[100]',
+            'tag' => 'permit_empty|is_not_unique[tags.name]',
         ];
         if(!$this->validateData($data, $rules)) {
             return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
         }
-        $result  = $this->model->list($page, $pageSize);
+        $result  = $this->model->list($page, $pageSize, $query, $tag);
         // log_message('debug', var_export($result, true));
         $recipeList = $result[0];
         $totalPages = $result[1];

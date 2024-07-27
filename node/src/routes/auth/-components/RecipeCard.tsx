@@ -18,8 +18,7 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
   const genLink = isLink
     ? (el) => {
-        console.log(<Link {...link}>{el}</Link>);
-        return <Link {...link}>{el}</Link>;
+      return <Link {...link}>{el}</Link>;
       }
     : (el) => el;
   return (
@@ -41,7 +40,7 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
 	<div className={styles.recipeBody}>{recipe.recipe_text}</div>
       </div>
       <p>
-        <strong>作成者ID:</strong> {recipe.user_id}
+        <strong>作成者:</strong> {recipe.user_name}
       </p>
       <p>
         <strong>ユニークID:</strong> {recipe.unique_string_id}

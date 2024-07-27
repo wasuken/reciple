@@ -61,23 +61,72 @@ where r.id = ?
         $record['images'] = $record['images'] === null ? [] : json_decode($record['images'], false);
         return $record;
     }
+
+    /**
+      クエリ、タグの入力状況にあわせて、
+      SQL, parametersの数を調整していく
+    */
+    public function adjustQueryAndParameters($query, $tag)
+    {
+        $lquery = "%{$query}%";
+        $whereStr = "";
+        $params = [];
+        $queryWhereStr = "
+-- クエリ検索
+WHERE title LIKE ? OR recipe_text LIKE ?
+";
+        $tagWhereStr = "
+-- タグ検索
+EXISTS (SELECT t2.name
+from tags as t2
+join recipe_tags as rt2 on rt2.tag_id = t2.id and rt2.recipe_id = r.id
+where t2.name = ?)";
+        // log_message('debug', "adjust: " . empty($tag . $query));
+        if(empty($tag . $query)){
+            // 両方空白の場合
+            $whereStr = "";
+            $params = [];
+        }else if(empty($tag)){
+            // tagのみ空白の場合
+            $whereStr = $queryWhereStr;
+            $params = [$lquery, $lquery];
+        }else if(empty($query)){
+            // queryのみ空白の場合
+            $whereStr = "WHERE ".$tagWhereStr;
+            $params = [$tag];
+        }else {
+            $whereStr = $queryWhereStr . " AND ".$tagWhereStr;
+            $params = [$lquery, $lquery, $tag];
+        }
+        return [$whereStr, $params];
+    }
     /**
       レシピ情報にレシピ画像、レシピタグ、タグテーブルを結合した結果を配列で返却する。
       @param int $page
       $param int $pageSize
       @return mixied ($records, totalPages)
     */
-    public function list($page = 1, $pageSize = 10)
+    public function list($page = 1, $pageSize = 10, $query = '', $tag = '')
     {
         // ページ番号とページサイズのバリデーション
         $page = max(1, (int)$page);
-        $pageSize = max(1, (int)$pageSize);
+        $pageSize = max(10, (int)$pageSize);
 
         // OFFSETの計算
         $offset = ($page - 1) * $pageSize;
 
+        $adjParams = $this->adjustQueryAndParameters($query, $tag);
+        log_message('error', var_export($adjParams, true));
+        $whereStr = $adjParams[0];
+        $totalParams = $adjParams[1];
+        $params = [...$totalParams, $pageSize, $offset];
         // 全レコード数を取得するクエリ
-        $totalCountQuery = $this->db->query("SELECT COUNT(*) AS total FROM recipes");
+        $totalCountQuery = $this
+            ->db
+            ->query("
+SELECT COUNT(*) AS total
+FROM recipes as r
+{$whereStr}", $totalParams);
         $totalCountResult = $totalCountQuery->getRow();
         $totalCount = (int)$totalCountResult->total;
 
@@ -85,13 +134,15 @@ where r.id = ?
         $totalPages = ceil($totalCount / $pageSize);
 
         $query = $this->db->query("
-SELECT r.id, r.title, r.user_id, r.unique_string_id, r.recipe_text, r.created_at,
+SELECT r.id, r.title, r.unique_string_id, r.recipe_text, r.created_at,
+(SELECT u.name from users as u where r.user_id = u.id) as user_name,
     (SELECT JSON_ARRAYAGG(image_path) FROM recipe_images ri WHERE ri.recipe_id = r.id) AS images,
     (SELECT JSON_ARRAYAGG(t.name) FROM recipe_tags rt JOIN tags t ON rt.tag_id = t.id WHERE rt.recipe_id = r.id) AS tags
 FROM recipes r
+{$whereStr}
 ORDER BY r.created_at desc
 LIMIT ? OFFSET ?;
-", [$pageSize, $offset]);
+", $params);
         $records = $query->getResultArray();
         foreach($records as $k => $v) {
             $records[$k]['tags'] = $v['tags'] === null ? [] : json_decode($v['tags'], false);
