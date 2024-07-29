@@ -82,19 +82,19 @@ from tags as t2
 join recipe_tags as rt2 on rt2.tag_id = t2.id and rt2.recipe_id = r.id
 where t2.name = ?)";
         // log_message('debug', "adjust: " . empty($tag . $query));
-        if(empty($tag . $query)){
+        if(empty($tag . $query)) {
             // 両方空白の場合
             $whereStr = "";
             $params = [];
-        }else if(empty($tag)){
+        } elseif(empty($tag)) {
             // tagのみ空白の場合
             $whereStr = $queryWhereStr;
             $params = [$lquery, $lquery];
-        }else if(empty($query)){
+        } elseif(empty($query)) {
             // queryのみ空白の場合
             $whereStr = "WHERE ".$tagWhereStr;
             $params = [$tag];
-        }else {
+        } else {
             $whereStr = $queryWhereStr . " AND ".$tagWhereStr;
             $params = [$lquery, $lquery, $tag];
         }
