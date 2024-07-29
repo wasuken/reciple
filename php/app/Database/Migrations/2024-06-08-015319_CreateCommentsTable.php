@@ -23,11 +23,6 @@ class CreateCommentsTable extends Migration
                 'type' => 'INT',
                 'unsigned' => true,
             ],
-            'image_path' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
-                'null' => true,
-            ],
             'comment_text' => [
                 'type' => 'TEXT',
             ],
