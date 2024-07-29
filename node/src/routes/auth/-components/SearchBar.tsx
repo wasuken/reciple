@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -6,10 +6,10 @@ import {
   Input,
   Button,
   useBreakpointValue,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
-import { SearchIcon } from '@chakra-ui/icons';
-import { SearchParam } from '@/type'
+import { SearchIcon } from "@chakra-ui/icons";
+import { SearchParam } from "@/type";
 
 interface Props {
   tags: string[];
@@ -18,14 +18,14 @@ interface Props {
 }
 
 const SearchBar: React.FC = ({ tags, onSubmit, initParam }: Props) => {
-  const [query, setQuery] = useState(initParam.query ?? '');
-  const [selectedTag, setSelectedTag] = useState(initParam.tag ?? '');
-  const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
+  const [query, setQuery] = useState(initParam.query ?? "");
+  const [selectedTag, setSelectedTag] = useState(initParam.tag ?? "");
+  const flexDirection = useBreakpointValue({ base: "column", md: "row" });
 
   useEffect(() => {
     setQuery(initParam.query);
     setSelectedTag(initParam.Tag);
-  }, [initParam])
+  }, [initParam]);
 
   return (
     <Box p={4} w="100%" maxW="800px" mx="auto">

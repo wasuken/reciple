@@ -18,7 +18,7 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
   const genLink = isLink
     ? (el) => {
-      return <Link {...link}>{el}</Link>;
+        return <Link {...link}>{el}</Link>;
       }
     : (el) => el;
   return (
@@ -37,7 +37,7 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
       )}
 
       <div className={styles.recipeMiddleArea}>
-	<div className={styles.recipeBody}>{recipe.recipe_text}</div>
+        <div className={styles.recipeBody}>{recipe.recipe_text}</div>
       </div>
       <p>
         <strong>作成者:</strong> {recipe.user_name}
@@ -46,28 +46,28 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
         <strong>ユニークID:</strong> {recipe.unique_string_id}
       </p>
       <div className={styles.recipeFooter}>
-	      {recipe.tags && recipe.tags.length > 0 && (
-		<Box mt={2}>
-		  <h4>Tags</h4>
-		  {recipe.tags.map((tag, index) => (
-		    <Tag
-		      key={index}
-		      size="md"
-		      borderRadius="full"
-		      variant="solid"
-		      colorScheme="teal"
-		      m={1}
-		    >
-		      <TagLabel>{tag}</TagLabel>
-		    </Tag>
-		  ))}
-		</Box>
-	      )}
-	{recipe.created_at && (
+        {recipe.tags && recipe.tags.length > 0 && (
+          <Box mt={2}>
+            <h4>Tags</h4>
+            {recipe.tags.map((tag, index) => (
+              <Tag
+                key={index}
+                size="md"
+                borderRadius="full"
+                variant="solid"
+                colorScheme="teal"
+                m={1}
+              >
+                <TagLabel>{tag}</TagLabel>
+              </Tag>
+            ))}
+          </Box>
+        )}
+        {recipe.created_at && (
           <p>
             <strong>作成日:</strong> {recipe.created_at}
           </p>
-	)}
+        )}
       </div>
     </div>
   );

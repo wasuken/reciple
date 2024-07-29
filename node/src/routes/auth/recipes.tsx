@@ -19,22 +19,15 @@ import Pagination from "@/components/Pagination";
 import { RecipeIncludeTagsAndImages, SearchParam } from "@/types";
 
 const fetchTagList = async () => {
-  const res = await fetch(
-    `/api/auth/tags`
-  );
+  const res = await fetch(`/api/auth/tags`);
   if (res.ok) {
     const data = await res.json();
     return data.map((t) => t.name);
   }
-}
+};
 
 const fetchRecipeList = async (param: SearchParam) => {
-  const {
-    page,
-    pageSize,
-    query,
-    tag,
-  } = param;
+  const { page, pageSize, query, tag } = param;
   const res = await fetch(
     `/api/auth/recipes?page=${page}&pageSize=${pageSize}&query=${query}&tag=${tag}`
   );
@@ -59,13 +52,13 @@ export const Route = createFileRoute("/auth/recipes")({
   loader: async () => {
     return {
       recipeList: await fetchRecipeList({
-	page: 1,
-	pageSize: 10,
-	query: '',
-	tag: '',
+        page: 1,
+        pageSize: 10,
+        query: "",
+        tag: "",
       }),
       tagList: await fetchTagList(),
-    }
+    };
   },
 });
 
@@ -76,9 +69,9 @@ function Recipes() {
   const [searchParam, setSearchParam] = useState<SearchParam>({
     page: 1,
     pageSize: 10,
-    query: '',
-    tag: '',
-  })
+    query: "",
+    tag: "",
+  });
   const [totalPages, setTotalPages] = useState<number>(initData.totalPages);
   const [recipes, setRecipes] = useState<RecipeIncludeTagsAndImages[]>(
     initData.recipeList
@@ -86,17 +79,17 @@ function Recipes() {
   const pageSize = 10;
 
   const handleSubmit = async (q: string, t: string) => {
-    const nparam = {...searchParam, query: q, tag: t};
+    const nparam = { ...searchParam, query: q, tag: t };
     const res = await fetchRecipeList(nparam);
-    if(res){
+    if (res) {
       setRecipes(res.recipeList);
       setTotalPages(res.totalPages);
       setSearchParam(nparam);
     }
-  }
+  };
 
   const onPageChange = async (page: number) => {
-    const nparam = {...searchParam, page}
+    const nparam = { ...searchParam, page };
     const data = await fetchRecipeList(nparam);
     setSearchParam(nparam);
     setRecipes(data.recipeList);
@@ -110,27 +103,27 @@ function Recipes() {
         onPageChange={onPageChange}
       />
       <SearchBar
-	initParam={searchParam}
-	onSubmit={handleSubmit}
-	tags={tagList ?? []}
+        initParam={searchParam}
+        onSubmit={handleSubmit}
+        tags={tagList ?? []}
       />
       {recipes.length > 0 ? (
-	<ul className={styles.recipeList}>
+        <ul className={styles.recipeList}>
           {recipes.map((recipe) => (
             <li key={recipe.id} className={styles.recipeItem}>
               <RecipeCard
-		recipe={recipe}
-		isLink={true}
-		link={{
+                recipe={recipe}
+                isLink={true}
+                link={{
                   to: "/auth/recipe/show/$recipeId",
                   params: { recipeId: recipe.id },
-		}}
+                }}
               />
             </li>
           ))}
-	</ul>
-      ): (
-	<>No Recipe_Images</>
+        </ul>
+      ) : (
+        <>No Recipe_Images</>
       )}
       <Pagination
         totalPages={totalPages}

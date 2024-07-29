@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 
-import RecipeForm from './-components/RecipeForm';
+import RecipeForm from "./-components/RecipeForm";
 import { RecipeIncludeTagsAndImages, RecipeFormData } from "@/type";
 
 import {
@@ -64,7 +64,5 @@ const postRecipe = async (data: RecipeFormData) => {
 };
 
 function Component() {
-  return (
-    <RecipeForm onSubmit={postRecipe} />
-  );
+  return <RecipeForm onSubmit={postRecipe} />;
 }

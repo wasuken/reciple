@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -14,8 +14,7 @@ import {
 } from "@chakra-ui/react";
 
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
-import { RecipeFormData } from '@/type';
-
+import { RecipeFormData } from "@/type";
 
 interface CheckResult {
   message: string;
@@ -28,45 +27,47 @@ const TagMaxSize = 20;
 const TitleMaxSize = 100;
 const RecipeTextMaxSize = 1000;
 
-function getCharacterCount(text: string, locale: string = 'ja'): number {
-    if (typeof Intl.Segmenter === 'function') {
-        const segmenter = new Intl.Segmenter(locale, { granularity: 'grapheme' });
-        const segments = Array.from(segmenter.segment(text));
-        return segments.length;
-    } else {
-        // Fallback for environments that do not support Intl.Segmenter
-        console.warn('Intl.Segmenter is not supported in this environment. Falling back to basic length calculation.');
-        return text.length;
-    }
+function getCharacterCount(text: string, locale: string = "ja"): number {
+  if (typeof Intl.Segmenter === "function") {
+    const segmenter = new Intl.Segmenter(locale, { granularity: "grapheme" });
+    const segments = Array.from(segmenter.segment(text));
+    return segments.length;
+  } else {
+    // Fallback for environments that do not support Intl.Segmenter
+    console.warn(
+      "Intl.Segmenter is not supported in this environment. Falling back to basic length calculation."
+    );
+    return text.length;
+  }
 }
 
 const tagsCheck = (tags: string[]): CheckResult => {
-  if(tags.length > TagListMaxSize) {
+  if (tags.length > TagListMaxSize) {
     return {
       message: `タグが${TagListMaxSize}個より多く設定されています。`,
       result: false,
-    }
-  }else if(tags.filter((x) => getCharacterCount(x) > TagMaxSize).length > 0){
+    };
+  } else if (tags.filter((x) => getCharacterCount(x) > TagMaxSize).length > 0) {
     return {
       message: `${TagMaxSize}をこえた文字数のタグが存在します。`,
       result: false,
-    }
+    };
   }
   return {
     message: "",
     result: true,
-  }
-}
+  };
+};
 
 const generateInputErrorToastParam = (description: string) => {
   return {
-    title: '入力エラー',
+    title: "入力エラー",
     description: description,
     status: "error",
     duration: 3000,
     isClosable: true,
-  }
-}
+  };
+};
 
 interface RecipeFormProps {
   onSubmit: (data: RecipeFormData) => Promise<Request>;
@@ -84,14 +85,26 @@ export default function RecipeForm({ onSubmit }: RecipeFormProps) {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!title || !recipeText) {
-      toast(generateInputErrorToastParam("タイトルとレシピテキストを入力してください。"));
+      toast(
+        generateInputErrorToastParam(
+          "タイトルとレシピテキストを入力してください。"
+        )
+      );
       return;
     }
-    if(getCharacterCount(title) > TitleMaxSize){
-      toast(generateInputErrorToastParam(`タイトルの最大文字数は${TitleMaxSize}文字です。`));
+    if (getCharacterCount(title) > TitleMaxSize) {
+      toast(
+        generateInputErrorToastParam(
+          `タイトルの最大文字数は${TitleMaxSize}文字です。`
+        )
+      );
       return;
-    }else if(getCharacterCount(recipeText) > RecipeTextMaxSize){
-      toast(generateInputErrorToastParam(`レシピテキストの最大文字数は${RecipeTextMaxSize}文字です。`));
+    } else if (getCharacterCount(recipeText) > RecipeTextMaxSize) {
+      toast(
+        generateInputErrorToastParam(
+          `レシピテキストの最大文字数は${RecipeTextMaxSize}文字です。`
+        )
+      );
       return;
     }
     const tagCheckResult = tagsCheck(tags);
@@ -143,16 +156,16 @@ export default function RecipeForm({ onSubmit }: RecipeFormProps) {
   };
 
   const handleTagAdd = () => {
-    if(!tagInput){
+    if (!tagInput) {
       toast(generateInputErrorToastParam("不正な入力です。"));
       return;
-    }else if(tags.includes(tagInput)){
+    } else if (tags.includes(tagInput)) {
       toast(generateInputErrorToastParam("すでに入力されているタグです"));
       return;
     }
     const ntags = [...tags, tagInput];
     const ntagsCheckResult = tagsCheck(ntags);
-    if(!ntagsCheckResult.result){
+    if (!ntagsCheckResult.result) {
       toast(generateInputErrorToastParam(ntagsCheckResult.message));
       return;
     }
