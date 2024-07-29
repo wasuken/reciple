@@ -1,5 +1,8 @@
 .PHONY: up ps help down b seeder fmt
 
+test:
+	docker compose exec php composer test
+
 up:
 	docker compose up -d
 
