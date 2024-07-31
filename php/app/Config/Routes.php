@@ -34,6 +34,12 @@ $routes->group('api', static function ($routes) {
         $routes->get('recipe/(:segment)', 'Recipe::show/$1');
         $routes->post('recipe', 'Recipe::create');
         $routes->post('recipe/image', 'Recipe::uploadImage');
+
+        $routes->get('recipe/(:segment)/comments', 'RecipeComment::index/$1');
+        $routes->post('comment', 'RecipeComment::create');
+        $routes->post('comment/(:segment)', 'RecipeComment::update/$1');
+        $routes->delete('comment/(:segment)', 'RecipeComment::delete/$1');
+
         $routes->get('logout', 'Logout::logout');
     });
 });

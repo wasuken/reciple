@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class RecipeCommentsModel extends Model
+class RecipeCommentModel extends Model
 {
     protected $table            = 'recipe_comments';
     protected $primaryKey       = 'id';
@@ -43,34 +43,4 @@ class RecipeCommentsModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    /**
-      特定のレシピ($id)のコメント一覧を返却する
-     */
-    public function list($id = null)
-    {
-        throw new \Exception('implemented yet');
-    }
-    /**
-      特定のレシピ($id)のコメント($data)を登録する
-    */
-    public function create($id = null, $data)
-    {
-        throw new \Exception('implemented yet');
-    }
-    /**
-      recipe_id, comment_idと一致するレコードを削除する
-    */
-    public function delete($recipe_id = null, $comment_id = null)
-    {
-        throw new \Exception('implemented yet');
-    }
-    /**
-      recipe_id, comment_idと一致するレコードを$dataで更新する
-      parent::updateと重複するため名前を変更
-    */
-    public function updateRecipeComment($recipe_id = null, $comment_id = null, $data)
-    {
-        throw new \Exception('implemented yet');
-    }
 }

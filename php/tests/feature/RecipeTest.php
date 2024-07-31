@@ -48,8 +48,6 @@ class RecipeTest extends CIUnitTestCase
             ->withBody(json_encode($postData))
             ->call('POST', '/api/auth/recipe');
 
-        // var_dump($result->getBody());
-
         $result->assertStatus(200);
     }
 }

@@ -49,7 +49,9 @@ class RecipeModel extends Model
         $query = $this->db->query("
 SELECT r.id, r.title, r.user_id, r.unique_string_id, r.recipe_text, r.created_at,
     (SELECT JSON_ARRAYAGG(image_path) FROM recipe_images ri WHERE ri.recipe_id = r.id) AS images,
-    (SELECT JSON_ARRAYAGG(t.name) FROM recipe_tags rt JOIN tags t ON rt.tag_id = t.id WHERE rt.recipe_id = r.id) AS tags
+    (SELECT JSON_ARRAYAGG(t.name) FROM recipe_tags rt JOIN tags t ON rt.tag_id = t.id WHERE rt.recipe_id = r.id) AS tags,
+    (SELECT COUNT(*) FROM recipe_comments rc where rc.recipe_id = r.id) as comment_count,
+(SELECT JSON_ARRAYAGG(JSON_OBJECT('user_id', rc.user_id, 'comment_id', rc.id, 'comment_text', rc.comment_text)) FROM recipe_comments as rc WHERE rc.recipe_id = r.id) as comments
 FROM recipes r
 where r.id = ?
 ", [$id]);
@@ -137,7 +139,8 @@ FROM recipes as r
 SELECT r.id, r.title, r.unique_string_id, r.recipe_text, r.created_at,
 (SELECT u.name from users as u where r.user_id = u.id) as user_name,
     (SELECT JSON_ARRAYAGG(image_path) FROM recipe_images ri WHERE ri.recipe_id = r.id) AS images,
-    (SELECT JSON_ARRAYAGG(t.name) FROM recipe_tags rt JOIN tags t ON rt.tag_id = t.id WHERE rt.recipe_id = r.id) AS tags
+    (SELECT JSON_ARRAYAGG(t.name) FROM recipe_tags rt JOIN tags t ON rt.tag_id = t.id WHERE rt.recipe_id = r.id) AS tags,
+    (SELECT COUNT(*) FROM recipe_comments rc where rc.recipe_id = r.id) as comment_count
 FROM recipes r
 {$whereStr}
 ORDER BY r.created_at desc

@@ -6,6 +6,9 @@ use CodeIgniter\Database\Seeder;
 
 class RecipeCommentsModelTestSeeder extends Seeder
 {
+    /**
+      とにかくid=1がなければ挿入、あれば例外ではじかれるのでそのままにぎりつぶす
+    */
     private function user()
     {
         $this->db->transBegin();
@@ -28,7 +31,9 @@ class RecipeCommentsModelTestSeeder extends Seeder
             $this->db->transRollback();
         }
     }
-
+    /**
+      とにかくid=1がなければ挿入、あれば例外ではじかれるのでそのままにぎりつぶす
+    */
     private function recipe()
     {
         $this->db->transBegin();
@@ -52,7 +57,17 @@ class RecipeCommentsModelTestSeeder extends Seeder
                 ];
             }
             $this->db->table('recipes')->insertBatch($data);
+            $this->db->transCommit();
+        } catch(\Exception $e) {
+            $this->db->transRollback();
+        }
+    }
+    private function comment()
+    {
+        $this->db->transBegin();
+        try {
             $this->db->table('recipe_comments')->insert([
+                'id' => 1,
                 'user_id' => 1,
                 'recipe_id' => 1,
                 'comment_text' => 'test',
@@ -63,12 +78,10 @@ class RecipeCommentsModelTestSeeder extends Seeder
             $this->db->transRollback();
         }
     }
-    /**
-      とにかくid=1がなければ挿入、あれば例外ではじかれるのでそのままにぎりつぶす
-    */
     public function run(): void
     {
         $this->user();
-
+        $this->recipe();
+        $this->comment();
     }
 }
