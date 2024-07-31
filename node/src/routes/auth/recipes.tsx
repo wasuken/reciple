@@ -16,7 +16,7 @@ import RecipeCard from "./-components/RecipeCard";
 import SearchBar from "./-components/SearchBar";
 
 import Pagination from "@/components/Pagination";
-import { RecipeIncludeTagsAndImages, SearchParam } from "@/types";
+import { RecipeInclude, SearchParam } from "@/types";
 
 const fetchTagList = async () => {
   const res = await fetch(`/api/auth/tags`);
@@ -73,7 +73,7 @@ function Recipes() {
     tag: "",
   });
   const [totalPages, setTotalPages] = useState<number>(initData.totalPages);
-  const [recipes, setRecipes] = useState<RecipeIncludeTagsAndImages[]>(
+  const [recipes, setRecipes] = useState<RecipeInclude[]>(
     initData.recipeList
   );
   const pageSize = 10;

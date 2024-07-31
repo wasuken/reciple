@@ -7,9 +7,18 @@ export interface Recipe {
   created_at: string;
 }
 
-export interface RecipeIncludeTagsAndImages extends Recipe {
+interface Comment {
+  comment_id:
+  user_name: string;
+  comment_text: string;
+}
+
+export interface RecipeInclude extends Recipe {
   tags: string[];
   images: string[];
+  comment_count: number;
+  // 一覧表示では利用しない
+  comments?: Comment[];
 }
 
 export interface RecipeFormData {

@@ -1,8 +1,11 @@
-import { RecipeIncludeTagsAndImages } from "@/type";
-import NoRecipeWebp from "@/assets/recipe_no_image.webp";
-import styles from "./RecipeCard.module.css";
 import { Box, Tag, TagLabel } from "@chakra-ui/react";
 import { Link } from "@tanstack/react-router";
+
+import { RecipeInclude } from "@/type";
+import NoRecipeWebp from "@/assets/recipe_no_image.webp";
+import styles from "./RecipeCard.module.css";
+import CommentCount from '@/components/CommentCount';
+
 
 interface RecipeCardLink {
   to: string;
@@ -10,7 +13,7 @@ interface RecipeCardLink {
 }
 
 interface RecipeCardProps {
-  recipe: RecipeIncludeTagsAndImages;
+  recipe: RecipeInclude;
   isLink?: boolean;
   link?: RecipeCardLink;
 }
@@ -63,6 +66,9 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
             ))}
           </Box>
         )}
+	<Box mt={2}>
+	  <CommentCount count={recipe.comment_count} />
+        </Box>
         {recipe.created_at && (
           <p>
             <strong>作成日:</strong> {recipe.created_at}

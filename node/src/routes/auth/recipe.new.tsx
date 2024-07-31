@@ -3,7 +3,7 @@ import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 
 import RecipeForm from "./-components/RecipeForm";
-import { RecipeIncludeTagsAndImages, RecipeFormData } from "@/type";
+import { RecipeInclude, RecipeFormData } from "@/type";
 
 import {
   Box,
