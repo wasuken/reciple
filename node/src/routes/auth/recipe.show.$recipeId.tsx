@@ -1,4 +1,9 @@
-import { createFileRoute, Outlet, Link, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  Link,
+  useRouter,
+} from "@tanstack/react-router";
 import RecipeCard from "./-components/RecipeCard";
 import styles from "./recipe.module.css";
 

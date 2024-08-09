@@ -28,21 +28,21 @@ function CommentCreator({ onSubmit }: CommentCreatorProps) {
 
   const handleSubmit = async () => {
     const res = await onSubmit(commentText, rating);
-    if(res){
+    if (res) {
       toast({
-	title: "成功",
-	description: "コメントの投稿に成功しました",
-	status: "success",
-	duration: 3000,
-	isClosable: true,
+        title: "成功",
+        description: "コメントの投稿に成功しました",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
       });
-    }else{
+    } else {
       toast({
-	title: "失敗",
-	description: "コメントの投稿に失敗しました",
-	status: "error",
-	duration: 3000,
-	isClosable: true,
+        title: "失敗",
+        description: "コメントの投稿に失敗しました",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
       });
     }
     setCommentText("");

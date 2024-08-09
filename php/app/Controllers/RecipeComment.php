@@ -10,7 +10,7 @@ use App\Models\RecipeCommentModel;
 class RecipeComment extends BaseController
 {
     private $model;
-        protected $session;
+    protected $session;
 
     public function __construct()
     {

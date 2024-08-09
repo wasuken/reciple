@@ -71,37 +71,47 @@ where r.id = ?
       クエリ、タグの入力状況にあわせて、
       SQL, parametersの数を調整していく
     */
-    public function adjustQueryAndParameters($query, $tag)
+    public function adjustQueryAndParameters($query, $tag, $minRating)
     {
         $lquery = "%{$query}%";
         $whereStr = "";
         $params = [];
         $queryWhereStr = "
--- クエリ検索
-WHERE title LIKE ? OR recipe_text LIKE ?
+-- クエリフィルタ
+title LIKE ? OR recipe_text LIKE ?
 ";
         $tagWhereStr = "
--- タグ検索
+-- タグフィルタ
 EXISTS (SELECT t2.name
 from tags as t2
 join recipe_tags as rt2 on rt2.tag_id = t2.id and rt2.recipe_id = r.id
 where t2.name = ?)";
+        $ratingWhereStr = "
+-- Ratingフィルタ
+rating >= ?
+";
         // log_message('debug', "adjust: " . empty($tag . $query));
-        if(empty($tag . $query)) {
-            // 両方空白の場合
+        if(empty($tag . $query . $minRating)) {
+            // 全部空白の場合
             $whereStr = "";
             $params = [];
-        } elseif(empty($tag)) {
-            // tagのみ空白の場合
-            $whereStr = $queryWhereStr;
-            $params = [$lquery, $lquery];
-        } elseif(empty($query)) {
-            // queryのみ空白の場合
-            $whereStr = "WHERE ".$tagWhereStr;
-            $params = [$tag];
         } else {
-            $whereStr = $queryWhereStr . " AND ".$tagWhereStr;
-            $params = [$lquery, $lquery, $tag];
+            $params = [];
+            $arr = [];
+            if(empty($tag)) {
+                $arr[] = $tagWhereStr;
+                $params[] = $tag;
+            }
+            if(empty($query)) {
+                $arr[] = $queryWhereStr;
+                $params[] = $lquery;
+                $params[] = $lquery;
+            }
+            if(empty($minRating)) {
+                $arr[] = $ratingWhereStr;
+                $params[] = $minRating;
+            }
+            $whereStr = 'WHERE' . implode(' AND ', $arr);
         }
         return [$whereStr, $params];
     }
@@ -111,7 +121,7 @@ where t2.name = ?)";
       $param int $pageSize
       @return mixied ($records, totalPages)
     */
-    public function list($page = 1, $pageSize = 10, $query = '', $tag = '')
+    public function list($page = 1, $pageSize = 10, $query = '', $tag = '', $minRating = 5)
     {
         // ページ番号とページサイズのバリデーション
         $page = max(1, (int)$page);
@@ -120,7 +130,7 @@ where t2.name = ?)";
         // OFFSETの計算
         $offset = ($page - 1) * $pageSize;
 
-        $adjParams = $this->adjustQueryAndParameters($query, $tag);
+        $adjParams = $this->adjustQueryAndParameters($query, $tag, $minRating);
         log_message('error', var_export($adjParams, true));
         $whereStr = $adjParams[0];
         $totalParams = $adjParams[1];
