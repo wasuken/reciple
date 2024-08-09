@@ -5,7 +5,8 @@ import { RecipeInclude } from "@/type";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import styles from "./RecipeCard.module.css";
 import CommentCount from "@/components/CommentCount";
-import CommentList from './CommentList';
+import CommentList from "./CommentList";
+import CommentCreator from "./CommentCreator";
 
 interface RecipeCardLink {
   to: string;
@@ -16,10 +17,15 @@ interface RecipeCardProps {
   recipe: RecipeInclude;
   isLink?: boolean;
   link?: RecipeCardLink;
+  onCommentSubmit?: (comment_text: string, rating: number) => Promise<boolean>;
 }
 
-export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
-  console.log(recipe)
+export default function RecipeCard({
+  recipe,
+  isLink,
+  link,
+  onCommentSubmit,
+}: RecipeCardProps) {
   const genLink = isLink
     ? (el) => {
         return <Link {...link}>{el}</Link>;
@@ -75,9 +81,8 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
             <strong>作成日:</strong> {recipe.created_at}
           </p>
         )}
-	{recipe.comments && (
-	  <CommentList comments={recipe.comments} />
-	)}
+        {recipe.comments && <CommentList comments={recipe.comments} />}
+        {onCommentSubmit && <CommentCreator onSubmit={onCommentSubmit} />}
       </div>
     </div>
   );

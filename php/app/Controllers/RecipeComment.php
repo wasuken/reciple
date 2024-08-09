@@ -10,6 +10,12 @@ use App\Models\RecipeCommentModel;
 class RecipeComment extends BaseController
 {
     private $model;
+        protected $session;
+
+    public function __construct()
+    {
+        $this->session = \Config\Services::session();
+    }
     public function initController(
         \CodeIgniter\HTTP\RequestInterface $request,
         \CodeIgniter\HTTP\ResponseInterface $response,
@@ -47,12 +53,14 @@ class RecipeComment extends BaseController
     {
         // validate
         $rules = [
-            'recipe_id' => 'required|is_not_unique[recipes.id]',
             'user_id' => 'required|is_not_unique[users.id]',
+            'recipe_id' => 'required|is_not_unique[recipes.id]',
             'comment_text' => 'required|min_length[1]|max_length[200]',
             'rating' => 'required|integer|in_list[0,1,2,3,4,5]',
         ];
         $data = $this->request->getJSON(true);
+        $authUser = $this->session->get('authUser');
+        $data = [...$data, 'user_id' => $authUser['sub']];
         if(!$this->validateData($data, $rules)) {
             return $this->response
                 ->setStatusCode(400)
@@ -65,7 +73,7 @@ class RecipeComment extends BaseController
     }
     /**
       記事に対するコメントを削除する
-      コメント投稿主、記事作者のみ利用可能
+      @todo コメント投稿主、記事作者のみ利用可能
     */
     public function delete($id = null)
     {
@@ -101,6 +109,8 @@ class RecipeComment extends BaseController
             'rating' => 'required|integer|in_list[0,1,2,3,4,5]',
         ];
         $data = $this->requet->getJSON(true);
+        $authUser = $this->session->get('authUser');
+        $data = [...$data, 'user_id' => $authUser['sub']];
         if(!$this->validateData($data, $rules)) {
             return $this->response
                 ->setStatusCode(400)

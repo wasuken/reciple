@@ -12,16 +12,20 @@ interface CommentListProps {
 }
 
 function CommentList({ comments }: CommentListProps) {
-  console.log(comments)
-  if(!comments) {
-    return (
-      <>No Comments.</>
-    )
+  console.log(comments);
+  if (!comments) {
+    return <>No Comments.</>;
   }
   return (
     <VStack align="stretch" spacing={4} mt={4}>
       {comments.map((comment) => (
-        <Box key={comment.comment_id} p={4} borderWidth="1px" borderRadius="md" shadow="sm">
+        <Box
+          key={comment.comment_id}
+          p={4}
+          borderWidth="1px"
+          borderRadius="md"
+          shadow="sm"
+        >
           <Flex justify="space-between" align="center">
             <Text fontWeight="bold">{comment.user_name}</Text>
             <Badge colorScheme="green">{`Rating: ${comment.rating}`}</Badge>

@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link, useRouter } from "@tanstack/react-router";
 import RecipeCard from "./-components/RecipeCard";
 import styles from "./recipe.module.css";
 
@@ -16,10 +16,27 @@ export const Route = createFileRoute("/auth/recipe/show/$recipeId")({
 });
 
 function Recipe() {
+  const router = useRouter();
   const recipe = Route.useLoaderData();
+  const handleCommentSubmit = async (comment_text: string, rating: number) => {
+    const recipeCommentData = {
+      recipe_id: recipe.id,
+      rating,
+      comment_text,
+    };
+    const res = await fetch(`/api/auth/comment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(recipeCommentData),
+    });
+    router.invalidate();
+    return res.ok;
+  };
   return (
     <div className={styles.container}>
-      <RecipeCard recipe={recipe} />
+      <RecipeCard recipe={recipe} onCommentSubmit={handleCommentSubmit} />
       <div className="col-span-3 py-2 px-4">
         <Outlet />
       </div>
