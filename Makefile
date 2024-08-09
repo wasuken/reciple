@@ -26,6 +26,7 @@ migr:
 seeder:
 	docker compose exec php php spark db:seed UserSeeder
 	docker compose exec php php spark db:seed RecipeSeeder
+	docker compose exec php php spark db:seed RecipeCommentSeeder
 
 fmt:
 	docker compose exec php composer format

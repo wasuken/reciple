@@ -24,7 +24,7 @@ const SearchBar: React.FC = ({ tags, onSubmit, initParam }: Props) => {
 
   useEffect(() => {
     setQuery(initParam.query);
-    setSelectedTag(initParam.Tag);
+    setSelectedTag(initParam.tag);
   }, [initParam]);
 
   return (

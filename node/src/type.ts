@@ -8,7 +8,7 @@ export interface Recipe {
 }
 
 interface Comment {
-  comment_id:
+  comment_id: number;
   user_name: string;
   comment_text: string;
 }

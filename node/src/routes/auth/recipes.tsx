@@ -73,9 +73,7 @@ function Recipes() {
     tag: "",
   });
   const [totalPages, setTotalPages] = useState<number>(initData.totalPages);
-  const [recipes, setRecipes] = useState<RecipeInclude[]>(
-    initData.recipeList
-  );
+  const [recipes, setRecipes] = useState<RecipeInclude[]>(initData.recipeList);
   const pageSize = 10;
 
   const handleSubmit = async (q: string, t: string) => {

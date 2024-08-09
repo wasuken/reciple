@@ -10,7 +10,7 @@
 }
 
 .header {
-	background-color: #4caf50;
+	background-color: #222222;
 	padding: 20px;
 	color: white;
 	text-align: center;
@@ -30,7 +30,6 @@
 .linkButton {
 	background: none;
 	border: none;
-	color: -webkit-link;
 	text-decoration: none;
 	font-weight: bold;
 	cursor: pointer;

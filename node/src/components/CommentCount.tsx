@@ -1,6 +1,6 @@
-import React from 'react';
-import { Box, Icon, Text } from '@chakra-ui/react';
-import { ChatIcon } from '@chakra-ui/icons';
+import React from "react";
+import { Box, Icon, Text } from "@chakra-ui/react";
+import { ChatIcon } from "@chakra-ui/icons";
 
 interface CommentCountProps {
   count: number;

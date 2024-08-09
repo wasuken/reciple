@@ -1,19 +1,20 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\RecipeCommentModel;
 
 /**
   レシピへのコメント関連のAPIメソッドを実装する
  */
-class RecipeComment  extends BaseController{
+class RecipeComment extends BaseController
+{
     private $model;
     public function initController(
         \CodeIgniter\HTTP\RequestInterface $request,
         \CodeIgniter\HTTP\ResponseInterface $response,
         \Psr\Log\LoggerInterface $logger
-    )
-    {
+    ) {
         parent::initController($request, $response, $logger);
         $this->model = new RecipeCommentModel();
     }
@@ -85,7 +86,7 @@ class RecipeComment  extends BaseController{
         // response
         return $this->response->setJSON(['message' => 'success']);
     }
-        /**
+    /**
       記事に対するコメントを更新する
       コメント投稿主のみ利用可能
     */

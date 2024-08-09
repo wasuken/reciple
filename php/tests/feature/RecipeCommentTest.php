@@ -19,7 +19,7 @@ class RecipeCommentTest extends CIUnitTestCase
         parent::setUp();
         // ここで追加のセットアップが必要な場合は記述
         $rst = $this->db->query('select * from recipes where id = 1')->getResultArray();
-        if(count($rst) <= 0){
+        if(count($rst) <= 0) {
             $this->db->query("
 insert into recipes(id, user_id, unique_string_id, title, recipe_text)
 values(1, 1, '1111', 'test', 'body');

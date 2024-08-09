@@ -4,8 +4,8 @@ import { Link } from "@tanstack/react-router";
 import { RecipeInclude } from "@/type";
 import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import styles from "./RecipeCard.module.css";
-import CommentCount from '@/components/CommentCount';
-
+import CommentCount from "@/components/CommentCount";
+import CommentList from './CommentList';
 
 interface RecipeCardLink {
   to: string;
@@ -19,6 +19,7 @@ interface RecipeCardProps {
 }
 
 export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
+  console.log(recipe)
   const genLink = isLink
     ? (el) => {
         return <Link {...link}>{el}</Link>;
@@ -66,14 +67,17 @@ export default function RecipeCard({ recipe, isLink, link }: RecipeCardProps) {
             ))}
           </Box>
         )}
-	<Box mt={2}>
-	  <CommentCount count={recipe.comment_count} />
+        <Box mt={2}>
+          <CommentCount count={recipe.comment_count} />
         </Box>
         {recipe.created_at && (
           <p>
             <strong>作成日:</strong> {recipe.created_at}
           </p>
         )}
+	{recipe.comments && (
+	  <CommentList comments={recipe.comments} />
+	)}
       </div>
     </div>
   );
