@@ -1,23 +1,8 @@
-import React, { useState } from "react";
-import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
-import NoRecipeWebp from "@/assets/recipe_no_image.webp";
+import React from "react";
+import { createFileRoute } from "@tanstack/react-router";
 
 import RecipeForm from "./-components/RecipeForm";
-import { RecipeInclude, RecipeFormData } from "@/type";
-
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Textarea,
-  Tag,
-  TagLabel,
-  TagCloseButton,
-  Image,
-  useToast,
-} from "@chakra-ui/react";
+import { RecipeFormData } from "@/type";
 
 export const Route = createFileRoute("/auth/recipe/new")({
   component: Component,

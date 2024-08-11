@@ -28,9 +28,12 @@ export interface RecipeFormData {
   tags: string[];
 }
 
-export interface SearchParams {
+export type RecipeRating = 1 | 2 | 3 | 4 | 5;
+
+export interface SearchParam {
   query: string;
   tag: string;
+  rating: RecipeRating;
   page: number;
   pageSize: number;
 }

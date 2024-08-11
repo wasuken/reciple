@@ -10,14 +10,18 @@ import CommentCreator from "./CommentCreator";
 
 interface RecipeCardLink {
   to: string;
-  params: Object;
+  params: object;
 }
 
 interface RecipeCardProps {
   recipe: RecipeInclude;
   isLink?: boolean;
   link?: RecipeCardLink;
-  onCommentSubmit?: (comment_text: string, rating: number) => Promise<boolean>;
+  onCommentSubmit?: (
+    comment_text: string,
+    rating: number,
+    rating: number
+  ) => Promise<boolean>;
 }
 
 export default function RecipeCard({

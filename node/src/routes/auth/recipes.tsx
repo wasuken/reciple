@@ -2,14 +2,9 @@ import { useState } from "react";
 import {
   createFileRoute,
   Outlet,
-  Link,
   ErrorComponent,
   ErrorComponentProps,
 } from "@tanstack/react-router";
-import { Tag, TagLabel, Box } from "@chakra-ui/react";
-import { GoogleLogin } from "@react-oauth/google";
-
-import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import styles from "./recipes.module.css";
 
 import RecipeCard from "./-components/RecipeCard";
@@ -27,9 +22,10 @@ const fetchTagList = async () => {
 };
 
 const fetchRecipeList = async (param: SearchParam) => {
-  const { page, pageSize, query, tag } = param;
+  const { page, pageSize, query, tag, rating } = param;
+  console.log(param);
   const res = await fetch(
-    `/api/auth/recipes?page=${page}&pageSize=${pageSize}&query=${query}&tag=${tag}`
+    `/api/auth/recipes?page=${page}&pageSize=${pageSize}&query=${query}&tag=${tag}&rating=${rating}`
   );
   if (res.ok) {
     const data = await res.json();
@@ -39,7 +35,7 @@ const fetchRecipeList = async (param: SearchParam) => {
   }
 };
 
-export function fetchErrorComponent({ error }: ErrorComponentProps) {
+function fetchErrorComponent({ error }: ErrorComponentProps) {
   return <ErrorComponent error={error} />;
 }
 
@@ -56,11 +52,14 @@ export const Route = createFileRoute("/auth/recipes")({
         pageSize: 10,
         query: "",
         tag: "",
+        rating: 0,
       }),
       tagList: await fetchTagList(),
     };
   },
 });
+
+const DEFAULT_PAGE_SIZE = 10;
 
 function Recipes() {
   const loadData = Route.useLoaderData();
@@ -68,16 +67,16 @@ function Recipes() {
   const tagList = loadData.tagList;
   const [searchParam, setSearchParam] = useState<SearchParam>({
     page: 1,
-    pageSize: 10,
+    pageSize: DEFAULT_PAGE_SIZE,
     query: "",
     tag: "",
+    rating: 0,
   });
   const [totalPages, setTotalPages] = useState<number>(initData.totalPages);
   const [recipes, setRecipes] = useState<RecipeInclude[]>(initData.recipeList);
-  const pageSize = 10;
 
-  const handleSubmit = async (q: string, t: string) => {
-    const nparam = { ...searchParam, query: q, tag: t };
+  const handleSubmit = async (q: string, t: string, r: number) => {
+    const nparam = { ...searchParam, query: q, tag: t, rating: r };
     const res = await fetchRecipeList(nparam);
     if (res) {
       setRecipes(res.recipeList);

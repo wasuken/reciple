@@ -1,5 +1,4 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { GoogleLogin } from "@react-oauth/google";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async ({ context, location }) => {

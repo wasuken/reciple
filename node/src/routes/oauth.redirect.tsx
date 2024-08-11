@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import { useAuth } from "@/auth";
 
@@ -8,8 +8,7 @@ export const Route = createFileRoute("/oauth/redirect")({
 });
 
 function OAuth() {
-  const { login, fetchUserProfile, loading, setLoading, isAuthenticated } =
-    useAuth();
+  const { login, fetchUserProfile, loading, isAuthenticated } = useAuth();
   const navigate = useNavigate({ from: "/oauth/redirect" });
   const [code, setCode] = useState<string | null>(null);
   useEffect(() => {
@@ -28,7 +27,7 @@ function OAuth() {
         const params = new URLSearchParams();
         params.append("code", code);
 
-        const response = await axios.post("/api/login/google", params, {
+        await axios.post("/api/login/google", params, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -51,10 +50,10 @@ function OAuth() {
     return () => {
       ignore = true;
     };
-  }, [code, loading]);
+  }, [code, loading, fetchUserProfile, navigate]);
   useEffect(() => {
     if (isAuthenticated) navigate({ to: "/auth" });
-  }, [isAuthenticated, loading]);
+  }, [isAuthenticated, loading, navigate]);
 
   return (
     <div className="p-2">

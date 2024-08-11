@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { GoogleLogin } from "@react-oauth/google";
 
 export const Route = createFileRoute("/auth/dashboard")({
   component: Dashboard,

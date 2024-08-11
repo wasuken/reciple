@@ -1,11 +1,5 @@
-import React, { useEffect, Suspense } from "react";
-import {
-  createFileRoute,
-  Link,
-  Outlet,
-  redirect,
-  useRouter,
-} from "@tanstack/react-router";
+import React from "react";
+import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 import { useAuth } from "@/auth";
 import styles from "./auth.module.css";
@@ -19,7 +13,6 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthLayout() {
-  const router = useRouter();
   const navigate = Route.useNavigate();
   const { logout } = useAuth();
 

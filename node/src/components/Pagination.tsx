@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, HStack } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 interface PaginationProps {
@@ -14,7 +14,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
 }) => {
   const createPageNumbers = () => {
-    let pages = [];
+    const pages = [];
     for (let i = 1; i <= totalPages; i++) {
       pages.push(
         <Button

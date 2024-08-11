@@ -1,9 +1,8 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { GoogleLogin } from "@react-oauth/google";
 
 // 認証済であれば、認証済トップへリダイレクト
 export const Route = createFileRoute("/")({
-  beforeLoad: async ({ context, location }) => {
+  beforeLoad: async ({ context }) => {
     if (context.auth.isAuthenticated) {
       throw redirect({
         to: "/auth",

@@ -1,12 +1,4 @@
 import React, { useEffect, useState } from "react";
-import {
-  createFileRoute,
-  Link,
-  Outlet,
-  redirect,
-  useNavigate,
-  useRouter,
-} from "@tanstack/react-router";
 import axios from "axios";
 import { sleep } from "./utils";
 

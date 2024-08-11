@@ -13,7 +13,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import NoRecipeWebp from "@/assets/recipe_no_image.webp";
 import { RecipeFormData } from "@/type";
 
 interface CheckResult {
@@ -119,7 +118,7 @@ export default function RecipeForm({ onSubmit }: RecipeFormProps) {
       tags,
     };
     try {
-      const res = await onSubmit(data);
+      await onSubmit(data);
       toast({
         title: "レシピ投稿成功",
         description: "レシピが投稿されました。",

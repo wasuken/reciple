@@ -3,18 +3,18 @@ import {
   Box,
   Button,
   Textarea,
-  Input,
   Flex,
   VStack,
   FormControl,
   FormLabel,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   useToast,
+  HStack,
+  Text,
+  Icon,
 } from "@chakra-ui/react";
+import { RecipeRating } from "@/type";
+
+import { StarIcon } from "@chakra-ui/icons";
 
 interface CommentCreatorProps {
   onSubmit: (commentText: string, rating: number) => Promise<boolean>;
@@ -23,8 +23,12 @@ interface CommentCreatorProps {
 function CommentCreator({ onSubmit }: CommentCreatorProps) {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [commentText, setCommentText] = useState<string>("");
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState<RecipeRating>(1);
   const toast = useToast();
+
+  const handleStarClick = (index: number) => {
+    setRating(index + 1);
+  };
 
   const handleSubmit = async () => {
     const res = await onSubmit(commentText, rating);
@@ -66,22 +70,25 @@ function CommentCreator({ onSubmit }: CommentCreatorProps) {
               onChange={(e) => setCommentText(e.target.value)}
             />
           </FormControl>
-          <FormControl>
-            <FormLabel>Rating</FormLabel>
-            <NumberInput
-              max={5}
-              min={0}
-              step={1}
-              value={rating}
-              onChange={(valueString) => setRating(parseFloat(valueString))}
-            >
-              <NumberInputField placeholder="評価を入力 (0 - 5)" />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-          </FormControl>
+          <Flex align="center" mr={2}>
+            <Text mr={2}>評価:</Text>
+            <HStack spacing={1} mr={2}>
+              {Array(5)
+                .fill("")
+                .map((_, index) => (
+                  <Box
+                    as="button"
+                    key={index}
+                    onClick={() => handleStarClick(index)}
+                    color={index < rating ? "teal.500" : "gray.300"}
+                    cursor="pointer"
+                    aria-label={`Rate ${index + 1} stars`}
+                  >
+                    <Icon as={StarIcon} boxSize={6} />
+                  </Box>
+                ))}
+            </HStack>
+          </Flex>
 
           <Flex justifyContent="space-between">
             <Button colorScheme="teal" onClick={handleSubmit}>
