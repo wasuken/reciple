@@ -35,7 +35,7 @@ class RecipeCommentSeeder extends Seeder
                 'recipe_id' => $recipeId,
                 'user_id' => $userId,
                 'comment_text' => $faker->realText(),
-                'rating' => $faker->numberBetween(0, 5),
+                'rating' => $faker->numberBetween(1, 5),
             ];
         }
         $this->db->table('recipe_comments')->insertBatch($data);

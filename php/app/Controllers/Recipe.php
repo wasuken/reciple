@@ -29,6 +29,7 @@ class Recipe extends BaseController
         $pageSize = $this->request->getGet('pageSize') ?? 10;
         $query = $this->request->getGet('query') ?? '';
         $tag = $this->request->getGet('tag') ?? '';
+        $rating = $this->request->getGet('rating') ?? 0;
 
         $data = [
             'page' => $page,
@@ -45,7 +46,7 @@ class Recipe extends BaseController
         if(!$this->validateData($data, $rules)) {
             return $this->response->setStatusCode(400)->setJSON($this->validator->getErrors());
         }
-        $result  = $this->model->list($page, $pageSize, $query, $tag);
+        $result  = $this->model->list($page, $pageSize, $query, $tag, $rating);
         // log_message('debug', var_export($result, true));
         $recipeList = $result[0];
         $totalPages = $result[1];

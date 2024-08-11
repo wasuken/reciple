@@ -78,7 +78,7 @@ where r.id = ?
         $params = [];
         $queryWhereStr = "
 -- クエリフィルタ
-title LIKE ? OR recipe_text LIKE ?
+(title LIKE ? OR recipe_text LIKE ?)
 ";
         $tagWhereStr = "
 -- タグフィルタ
@@ -88,7 +88,10 @@ join recipe_tags as rt2 on rt2.tag_id = t2.id and rt2.recipe_id = r.id
 where t2.name = ?)";
         $ratingWhereStr = "
 -- Ratingフィルタ
-rating >= ?
+EXISTS (SELECT AVG(rc2.rating) AS rating
+FROM recipe_comments AS rc2
+WHERE rc2.recipe_id = r.id
+HAVING rating >= ?)
 ";
         // log_message('debug', "adjust: " . empty($tag . $query));
         if(empty($tag . $query . $minRating)) {
@@ -98,16 +101,16 @@ rating >= ?
         } else {
             $params = [];
             $arr = [];
-            if(empty($tag)) {
+            if(!empty($tag)) {
                 $arr[] = $tagWhereStr;
                 $params[] = $tag;
             }
-            if(empty($query)) {
+            if(!empty($query)) {
                 $arr[] = $queryWhereStr;
                 $params[] = $lquery;
                 $params[] = $lquery;
             }
-            if(empty($minRating)) {
+            if(!empty($minRating)) {
                 $arr[] = $ratingWhereStr;
                 $params[] = $minRating;
             }
@@ -121,7 +124,7 @@ rating >= ?
       $param int $pageSize
       @return mixied ($records, totalPages)
     */
-    public function list($page = 1, $pageSize = 10, $query = '', $tag = '', $minRating = 5)
+    public function list($page = 1, $pageSize = 10, $query = '', $tag = '', $minRating = 0)
     {
         // ページ番号とページサイズのバリデーション
         $page = max(1, (int)$page);
@@ -135,30 +138,36 @@ rating >= ?
         $whereStr = $adjParams[0];
         $totalParams = $adjParams[1];
         $params = [...$totalParams, $pageSize, $offset];
+        $totalSQL = "
+SELECT
+COUNT(*) AS total
+FROM recipes as r
+{$whereStr}";
+        log_message('error', var_export([$totalSQL, $totalParams], true));
         // 全レコード数を取得するクエリ
         $totalCountQuery = $this
             ->db
-            ->query("
-SELECT COUNT(*) AS total
-FROM recipes as r
-{$whereStr}", $totalParams);
+            ->query($totalSQL, $totalParams);
         $totalCountResult = $totalCountQuery->getRow();
         $totalCount = (int)$totalCountResult->total;
 
         // トータルページ数の計算
         $totalPages = ceil($totalCount / $pageSize);
 
-        $query = $this->db->query("
+        $sql = "
 SELECT r.id, r.title, r.unique_string_id, r.recipe_text, r.created_at,
-(SELECT u.name from users as u where r.user_id = u.id) as user_name,
+(SELECT u.name from users AS u WHERE r.user_id = u.id) AS user_name,
     (SELECT JSON_ARRAYAGG(image_path) FROM recipe_images ri WHERE ri.recipe_id = r.id) AS images,
     (SELECT JSON_ARRAYAGG(t.name) FROM recipe_tags rt JOIN tags t ON rt.tag_id = t.id WHERE rt.recipe_id = r.id) AS tags,
-    (SELECT COUNT(*) FROM recipe_comments rc where rc.recipe_id = r.id) as comment_count
-FROM recipes r
+    (SELECT COUNT(*) FROM recipe_comments AS rc WHERE rc.recipe_id = r.id) AS comment_count,
+(SELECT AVG(rc2.rating) AS rating FROM recipe_comments AS rc2 WHERE rc2.recipe_id = r.id) AS avg_rating
+FROM recipes AS r
 {$whereStr}
 ORDER BY r.created_at desc
 LIMIT ? OFFSET ?;
-", $params);
+";
+        log_message('error', var_export([$sql, $params], true));
+        $query = $this->db->query($sql, $params);
         $records = $query->getResultArray();
         foreach($records as $k => $v) {
             $records[$k]['tags'] = $v['tags'] === null ? [] : json_decode($v['tags'], false);
