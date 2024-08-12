@@ -48,8 +48,8 @@ const SearchBar: React.FC = ({ tags, onSubmit, initParam }: Props) => {
             </option>
           ))}
         </Select>
-        <Flex align="center" mr={2}>
-          <Text mr={2}>最小平均評価:</Text>
+        <Flex align="center" mb={[2, 0]}>
+          <Text mr={2} style={{ width: '200px' }}>評価フィルタ:</Text>
           <HStack spacing={1} mr={2}>
             {Array(5)
               .fill("")

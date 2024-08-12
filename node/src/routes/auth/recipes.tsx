@@ -94,11 +94,11 @@ function Recipes() {
   };
   return (
     <>
-      <Pagination
-        totalPages={totalPages}
-        currentPage={searchParam.page}
-        onPageChange={onPageChange}
-      />
+	      <Pagination
+  totalPages={totalPages}
+  currentPage={searchParam.page}
+  onPageChange={onPageChange}
+	      />
       <SearchBar
         initParam={searchParam}
         onSubmit={handleSubmit}
