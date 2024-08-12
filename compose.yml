@@ -1,9 +1,15 @@
 services:
   php:
+    container_name: php
     build:
       context: .
       dockerfile: Dockerfile.php
-    container_name: php
+      args:
+        USER_ID: ${USER_ID:-1000}
+    working_dir: /var/www/html
+    env_file: ./.env
+    environment:
+      - USER_ID=${USER_ID:-1000}
     volumes:
       - ./php:/var/www/html
     networks:
@@ -16,7 +22,7 @@ services:
     container_name: node
     volumes:
       - ./node:/usr/src/app
-      - /usr/src/app/node_modules
+      - node_modules:/usr/src/app/node_modules
     working_dir: /usr/src/app
     networks:
       - backend
@@ -26,7 +32,7 @@ services:
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mydatabase
+      MYSQL_DATABASE: recipe
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     volumes:
@@ -42,8 +48,6 @@ services:
       PMA_HOST: mysql
       PMA_USER: root
       PMA_PASSWORD: rootpassword
-    ports:
-      - "8081:80"
     networks:
       - backend
 
@@ -52,9 +56,8 @@ services:
     container_name: nginx
     volumes:
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
-      - ./src:/var/www/html
     ports:
-      - "3000:80"
+      - "8080:80"
     depends_on:
       - php
       - phpmyadmin
@@ -63,6 +66,7 @@ services:
 
 volumes:
   db_data:
+  node_modules:
 
 networks:
   backend:

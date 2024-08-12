@@ -3,8 +3,9 @@
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
+use CodeIgniter\Database\RawSql;
 
-class CreateCommentsTable extends Migration
+class CreateRecipeCommentsTable extends Migration
 {
     public function up()
     {
@@ -22,11 +23,6 @@ class CreateCommentsTable extends Migration
                 'type' => 'INT',
                 'unsigned' => true,
             ],
-            'image_path' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
-                'null' => true,
-            ],
             'comment_text' => [
                 'type' => 'TEXT',
             ],
@@ -35,21 +31,21 @@ class CreateCommentsTable extends Migration
             ],
             'created_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
+                'default' => new RawSql('CURRENT_TIMESTAMP'),
             ],
             'updated_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
+                'default' => new RawSql('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
             ],
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addForeignKey('recipe_id', 'recipes', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->createTable('comments');
+        $this->forge->createTable('recipe_comments');
     }
 
     public function down()
     {
-        $this->forge->dropTable('comments');
+        $this->forge->dropTable('recipe_comments');
     }
 }

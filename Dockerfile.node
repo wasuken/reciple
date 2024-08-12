@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 COPY ./node/package*.json ./
 
 RUN npm install
+COPY ./node /usr/src/app
 
 RUN chown node: -R  /usr/src/app
 

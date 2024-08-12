@@ -15,6 +15,12 @@ use CodeIgniter\Filters\SecureHeaders;
 
 class Filters extends BaseFilters
 {
+    public function __construct()
+    {
+        if (ENVIRONMENT === 'testing') {
+            unset($this->filters['auth']['before']);
+        }
+    }
     /**
      * Configures aliases for Filter classes to
      * make reading things nicer and simpler.
@@ -34,6 +40,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'auth'           => \App\Filters\AuthFilter::class,
     ];
 
     /**
@@ -103,5 +110,9 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        'auth' => ['before' => [
+            'api/auth/*',
+        ]],
+    ];
 }

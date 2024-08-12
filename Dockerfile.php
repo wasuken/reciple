@@ -1,5 +1,7 @@
 FROM php:8.3-fpm
 
+ARG USER_ID=1000
+
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libonig-dev \
@@ -8,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl mbstring pdo_mysql zip mysqli
 
-RUN useradd --shell /bin/bash -u 1000 -o -c "" -m runuser
+RUN useradd --shell /bin/bash -u ${USER_ID} -o -c "" -m runuser
 RUN mkdir -p /shared/tmp && chown runuser. /shared/ -R
 RUN chown runuser:runuser /var/www/html
 
