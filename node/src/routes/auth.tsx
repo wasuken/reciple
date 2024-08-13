@@ -1,5 +1,7 @@
 import React from "react";
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link } from "@tanstack/react-router";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { Box, Flex, IconButton, Stack, useDisclosure } from "@chakra-ui/react";
 
 import { useAuth } from "@/auth";
 import styles from "./auth.module.css";
@@ -13,6 +15,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthLayout() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = Route.useNavigate();
   const { logout } = useAuth();
 
@@ -25,44 +28,123 @@ function AuthLayout() {
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>レシピ共有サイト</h1>
-        <nav>
-          <ul className={styles.navList}>
-            <li>
-              <Link to="/auth" className={styles.linkButton}>
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/auth/recipes" className={styles.linkButton}>
-                Recipes
-              </Link>
-            </li>
-            <li>
-              <Link to="/auth/recipe/new" className={styles.linkButton}>
-                Post Recipe
-              </Link>
-            </li>
-            <li>
-              <button
-                type="button"
-                className={styles.linkButton}
-                onClick={handleLogout}
+    <>
+      <Box bg="teal.500" px={4} mb={2}>
+	<Flex h={16} alignItems="center" justifyContent="space-between">
+          <IconButton
+            size="md"
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            aria-label="Toggle navigation"
+            display={{ md: "none" }}
+            onClick={isOpen ? onClose : onOpen}
+            color="black"
+          />
+          <Flex alignItems="center">
+            <Link
+              to="/auth/top"
+              fontSize="lg"
+              fontWeight="bold"
+              color="white"
+              mr={4}
+              _hover={{ textDecoration: "none", color: "gray.200" }}
+            >
+              MySite
+            </Link>
+            <Stack
+              direction="row"
+              spacing={4}
+              display={{ base: "none", md: "flex" }}
+            >
+              <Link
+		to="/auth/top"
+		className="linkButton"
+		color="white"
+		_hover={{ textDecoration: "none", color: "gray.200" }}
               >
-                Logout
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <main className={styles.main}>
+		Top
+              </Link>
+              <Link
+		to="/auth/recipes"
+		className="linkButton"
+		color="white"
+		_hover={{ textDecoration: "none", color: "gray.200" }}
+              >
+		Recipes
+              </Link>
+              <Link
+		to="/auth/recipe/new"
+		className="linkButton"
+		color="white"
+		_hover={{ textDecoration: "none", color: "gray.200" }}
+              >
+		Post Recipe
+              </Link>
+              <Link
+		onClick={handleLogout}
+		className="linkButton"
+		color="white"
+		_hover={{ textDecoration: "none", color: "gray.200" }}
+              >
+		Logout
+              </Link>
+            </Stack>
+          </Flex>
+	</Flex>
+
+	{isOpen && (
+          <Box pb={4} display={{ md: "none" }}>
+            <Stack as="nav" spacing={4}>
+              <Link
+		to="/auth/top"
+		onClick={() => {
+                  onClose();
+		}}
+		className="linkButton"
+		color="white"
+		_hover={{ textDecoration: "none", color: "gray.200" }}
+              >
+		Top
+              </Link>
+              <Link
+		to="/auth/recipes"
+		onClick={() => {
+                  onClose();
+		}}
+		className="linkButton"
+		color="white"
+		_hover={{ textDecoration: "none", color: "gray.200" }}
+              >
+		Recipes
+              </Link>
+              <Link
+		to="/auth/recipe/new"
+		onClick={() => {
+                  onClose();
+		}}
+		className="linkButton"
+		color="white"
+		_hover={{ textDecoration: "none", color: "gray.200" }}
+              >
+		Post Recipe
+              </Link>
+              <Link
+		onClick={() => {
+                  handleLogout();
+                  onClose();
+		}}
+		className="linkButton"
+		color="white"
+		_hover={{ textDecoration: "none", color: "gray.200" }}
+              >
+		Logout
+              </Link>
+            </Stack>
+          </Box>
+	)}
+      </Box>
+      <div className="col-span-3 py-2 px-4">
         <Outlet />
-      </main>
-      <footer className={styles.footer}>
-        <p>© 2024 レシピ共有サイト. All rights reserved.</p>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }
