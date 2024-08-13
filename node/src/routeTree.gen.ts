@@ -17,6 +17,7 @@ import { Route as LoginImport } from './routes/login'
 import { Route as AuthImport } from './routes/auth'
 import { Route as IndexImport } from './routes/index'
 import { Route as OauthRedirectImport } from './routes/oauth.redirect'
+import { Route as AuthTopImport } from './routes/auth/top'
 import { Route as AuthRecipesImport } from './routes/auth/recipes'
 import { Route as AuthDashboardImport } from './routes/auth/dashboard'
 import { Route as AuthRecipeNewImport } from './routes/auth/recipe.new'
@@ -51,6 +52,11 @@ const IndexRoute = IndexImport.update({
 const OauthRedirectRoute = OauthRedirectImport.update({
   path: '/oauth/redirect',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthTopRoute = AuthTopImport.update({
+  path: '/top',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthRecipesRoute = AuthRecipesImport.update({
@@ -119,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRecipesImport
       parentRoute: typeof AuthImport
     }
+    '/auth/top': {
+      id: '/auth/top'
+      path: '/top'
+      fullPath: '/auth/top'
+      preLoaderRoute: typeof AuthTopImport
+      parentRoute: typeof AuthImport
+    }
     '/oauth/redirect': {
       id: '/oauth/redirect'
       path: '/oauth/redirect'
@@ -150,6 +163,7 @@ export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
     AuthDashboardRoute,
     AuthRecipesRoute,
+    AuthTopRoute,
     AuthRecipeNewRoute,
     AuthRecipeShowRecipeIdRoute,
   }),
@@ -181,6 +195,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/auth/dashboard",
         "/auth/recipes",
+        "/auth/top",
         "/auth/recipe/new",
         "/auth/recipe/show/$recipeId"
       ]
@@ -197,6 +212,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/auth/recipes": {
       "filePath": "auth/recipes.tsx",
+      "parent": "/auth"
+    },
+    "/auth/top": {
+      "filePath": "auth/top.tsx",
       "parent": "/auth"
     },
     "/oauth/redirect": {
