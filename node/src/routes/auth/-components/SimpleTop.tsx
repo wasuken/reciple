@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Grid, Image, Text, Flex, Button, HStack } from "@chakra-ui/react";
 
-import RecipeList from './RecipeList';
-import { RecipeInclude } from '@/type'
+import RecipeList from "./RecipeList";
+import { RecipeInclude } from "@/type";
 
 interface TopPageProps {
   tags: string[];
@@ -11,7 +11,12 @@ interface TopPageProps {
   recipes: RecipeInclude[];
 }
 
-function SimpleTop({ tags, onTagClick, siteDescription, recipes }: TopPageProps) {
+function SimpleTop({
+  tags,
+  onTagClick,
+  siteDescription,
+  recipes,
+}: TopPageProps) {
   return (
     <Box p={4}>
       <Text fontSize="lg" fontWeight="bold" mb={2}>
@@ -20,7 +25,12 @@ function SimpleTop({ tags, onTagClick, siteDescription, recipes }: TopPageProps)
       <Flex justify="flex-start" mb={4}>
         <HStack spacing={2}>
           {tags.map((tag) => (
-            <Button key={tag} onClick={() => onTagClick(tag)} variant="outline" colorScheme="teal">
+            <Button
+              key={tag}
+              onClick={() => onTagClick(tag)}
+              variant="outline"
+              colorScheme="teal"
+            >
               {tag}
             </Button>
           ))}
