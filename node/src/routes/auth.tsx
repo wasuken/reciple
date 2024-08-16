@@ -30,7 +30,7 @@ function AuthLayout() {
   return (
     <>
       <Box bg="teal.500" px={4} mb={2}>
-	<Flex h={16} alignItems="center" justifyContent="space-between">
+        <Flex h={16} alignItems="center" justifyContent="space-between">
           <IconButton
             size="md"
             icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -56,91 +56,91 @@ function AuthLayout() {
               display={{ base: "none", md: "flex" }}
             >
               <Link
-		to="/auth/top"
-		className="linkButton"
-		color="white"
-		_hover={{ textDecoration: "none", color: "gray.200" }}
+                to="/auth/top"
+                className="linkButton"
+                color="white"
+                _hover={{ textDecoration: "none", color: "gray.200" }}
               >
-		Top
+                Top
               </Link>
               <Link
-		to="/auth/recipes"
-		className="linkButton"
-		color="white"
-		_hover={{ textDecoration: "none", color: "gray.200" }}
+                to="/auth/recipes"
+                className="linkButton"
+                color="white"
+                _hover={{ textDecoration: "none", color: "gray.200" }}
               >
-		Recipes
+                Recipes
               </Link>
               <Link
-		to="/auth/recipe/new"
-		className="linkButton"
-		color="white"
-		_hover={{ textDecoration: "none", color: "gray.200" }}
+                to="/auth/recipe/new"
+                className="linkButton"
+                color="white"
+                _hover={{ textDecoration: "none", color: "gray.200" }}
               >
-		Post Recipe
+                Post Recipe
               </Link>
               <Link
-		onClick={handleLogout}
-		className="linkButton"
-		color="white"
-		_hover={{ textDecoration: "none", color: "gray.200" }}
+                onClick={handleLogout}
+                className="linkButton"
+                color="white"
+                _hover={{ textDecoration: "none", color: "gray.200" }}
               >
-		Logout
+                Logout
               </Link>
             </Stack>
           </Flex>
-	</Flex>
+        </Flex>
 
-	{isOpen && (
+        {isOpen && (
           <Box pb={4} display={{ md: "none" }}>
             <Stack as="nav" spacing={4}>
               <Link
-		to="/auth/top"
-		onClick={() => {
+                to="/auth/top"
+                onClick={() => {
                   onClose();
-		}}
-		className="linkButton"
-		color="white"
-		_hover={{ textDecoration: "none", color: "gray.200" }}
+                }}
+                className="linkButton"
+                color="white"
+                _hover={{ textDecoration: "none", color: "gray.200" }}
               >
-		Top
+                Top
               </Link>
               <Link
-		to="/auth/recipes"
-		onClick={() => {
+                to="/auth/recipes"
+                onClick={() => {
                   onClose();
-		}}
-		className="linkButton"
-		color="white"
-		_hover={{ textDecoration: "none", color: "gray.200" }}
+                }}
+                className="linkButton"
+                color="white"
+                _hover={{ textDecoration: "none", color: "gray.200" }}
               >
-		Recipes
+                Recipes
               </Link>
               <Link
-		to="/auth/recipe/new"
-		onClick={() => {
+                to="/auth/recipe/new"
+                onClick={() => {
                   onClose();
-		}}
-		className="linkButton"
-		color="white"
-		_hover={{ textDecoration: "none", color: "gray.200" }}
+                }}
+                className="linkButton"
+                color="white"
+                _hover={{ textDecoration: "none", color: "gray.200" }}
               >
-		Post Recipe
+                Post Recipe
               </Link>
               <Link
-		onClick={() => {
+                onClick={() => {
                   handleLogout();
                   onClose();
-		}}
-		className="linkButton"
-		color="white"
-		_hover={{ textDecoration: "none", color: "gray.200" }}
+                }}
+                className="linkButton"
+                color="white"
+                _hover={{ textDecoration: "none", color: "gray.200" }}
               >
-		Logout
+                Logout
               </Link>
             </Stack>
           </Box>
-	)}
+        )}
       </Box>
       <div className="col-span-3 py-2 px-4">
         <Outlet />

@@ -49,7 +49,9 @@ const SearchBar: React.FC = ({ tags, onSubmit, initParam }: Props) => {
           ))}
         </Select>
         <Flex align="center" mb={[2, 0]}>
-          <Text mr={2} style={{ width: '200px' }}>評価フィルタ:</Text>
+          <Text mr={2} style={{ width: "200px" }}>
+            評価フィルタ:
+          </Text>
           <HStack spacing={1} mr={2}>
             {Array(5)
               .fill("")

@@ -42,18 +42,25 @@ function fetchErrorComponent({ error }: ErrorComponentProps) {
 export const Route = createFileRoute("/auth/recipes")({
   component: Recipes,
   errorComponent: fetchErrorComponent,
+  validateSearch: (search: Record<string, unknown>): SearchParam => {
+    // validate and parse the search params into a typed state
+    return {
+      page: search?.page ?? 1,
+      pageSize: search?.pageSize ?? DEFAULT_PAGE_SIZE,
+      query: search?.query ?? "",
+      tag: search?.tag ?? "",
+      rating: search?.rating ?? 1,
+    };
+  },
   notFoundComponent: () => {
     return <p>Post not found</p>;
   },
-  loader: async () => {
+  loaderDeps: ({ search }) => {
+    return search;
+  },
+  loader: async ({ deps }) => {
     return {
-      recipeList: await fetchRecipeList({
-        page: 1,
-        pageSize: 10,
-        query: "",
-        tag: "",
-        rating: 0,
-      }),
+      recipeList: await fetchRecipeList(deps),
       tagList: await fetchTagList(),
     };
   },
@@ -65,13 +72,9 @@ function Recipes() {
   const loadData = Route.useLoaderData();
   const initData = loadData.recipeList;
   const tagList = loadData.tagList;
-  const [searchParam, setSearchParam] = useState<SearchParam>({
-    page: 1,
-    pageSize: DEFAULT_PAGE_SIZE,
-    query: "",
-    tag: "",
-    rating: 0,
-  });
+  const initSearchParam = Route.useSearch();
+  // console.log(initSearchParam);
+  const [searchParam, setSearchParam] = useState<SearchParam>(initSearchParam);
   const [totalPages, setTotalPages] = useState<number>(initData.totalPages);
   const [recipes, setRecipes] = useState<RecipeInclude[]>(initData.recipeList);
 
@@ -94,11 +97,11 @@ function Recipes() {
   };
   return (
     <>
-	      <Pagination
-  totalPages={totalPages}
-  currentPage={searchParam.page}
-  onPageChange={onPageChange}
-	      />
+      <Pagination
+        totalPages={totalPages}
+        currentPage={searchParam.page}
+        onPageChange={onPageChange}
+      />
       <SearchBar
         initParam={searchParam}
         onSubmit={handleSubmit}

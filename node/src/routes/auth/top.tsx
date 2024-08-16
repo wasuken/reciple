@@ -4,6 +4,7 @@ import {
   Outlet,
   ErrorComponent,
   ErrorComponentProps,
+  useNavigate,
 } from "@tanstack/react-router";
 import styles from "./recipes.module.css";
 
@@ -12,7 +13,7 @@ import SearchBar from "./-components/SearchBar";
 
 import Pagination from "@/components/Pagination";
 import { RecipeInclude, SearchParam } from "@/types";
-import SimpleTop from './-components/SimpleTop'
+import SimpleTop from "./-components/SimpleTop";
 
 const fetchTagList = async () => {
   const res = await fetch(`/api/auth/tags`);
@@ -54,6 +55,7 @@ export const Route = createFileRoute("/auth/top")({
 const DEFAULT_PAGE_SIZE = 5;
 
 function Top() {
+  const navigate = useNavigate({ from: "/auth/top" });
   const loadData = Route.useLoaderData();
   const initData = loadData.recipeList;
   const tagList = loadData.tagList;
@@ -69,7 +71,9 @@ function Top() {
       tags={tagList}
       recipes={initData.recipeList}
       siteDescription={"madaaaaa desc"}
-      onTagClick={() => console.log('mada')}
+      onTagClick={(tagName: string) =>
+        navigate({ to: `/auth/recipes`, search: { tag: tagName } })
+      }
     />
   );
 }
